@@ -3,33 +3,50 @@
 #include <cassert>
 using namespace std;
 
-Card::Card( Card::Rank r, Card::Suit s ) : suit_{s}, rank_{r} {}
+Card::Card( Card::Rank r, Card::Suit s ) : mySuit{s}, myRank{r} {}
 
-Card::Suit Card::suit() const { return suit_; }
-Card::Rank Card::rank() const { return rank_; }
-
-bool Card::operator==( const Card & c ) const {
-	return ( suit().suit() == c.suit().suit() && rank().rank() == c.rank().rank() );
+Card::Suit Card::suit() const
+{
+    return mySuit;
 }
 
-ostream & operator<<( ostream & out, const Card::Suit & s ) {
+Card::Rank Card::rank() const
+{
+    return myRank;
+}
+
+bool
+Card::operator==(const Card &c) const
+{
+	return (suit().suit() == c.suit().suit() && rank().rank() == c.rank().rank());
+}
+
+ostream&
+operator<<(ostream &out, const Card::Suit &s)
+{
 	static string suits = "CDHS";
 	out << suits[ s.suit() ];
 	return out;
 } // operator<<
 
-ostream & operator<<( ostream & out, const Card::Rank & r ) {
+ostream&
+operator<<(ostream &out, const Card::Rank &r)
+{
 	static string ranks = "A23456789TJQK";
 	out << ranks[ r.rank() ];
 	return out;
 } // operator<<
 
-ostream & operator<<( ostream & out, const Card & c ) {
+ostream&
+operator<<( ostream & out, const Card & c )
+{
 	out << c.rank() << c.suit();	
 	return out;
 } // operator<<
 
-istream & operator>>( istream & in, Card::Rank & r ) {
+istream&
+operator>>( istream & in, Card::Rank & r )
+{
 	static string ranks = "A23456789TJQK";
 	char c;
 	in >> c;
@@ -42,7 +59,9 @@ istream & operator>>( istream & in, Card::Rank & r ) {
 	return in;
 } // operator>>
 
-istream & operator>>( istream & in, Card::Suit & s ) {
+istream&
+operator>>( istream & in, Card::Suit & s )
+{
 	static string suits = "CDHS";
 	char c;
 	in >> c;
@@ -55,7 +74,9 @@ istream & operator>>( istream & in, Card::Suit & s ) {
 	return in;
 }  // operator>>
 
-istream & operator>>( istream & in, Card & c ) {	
+istream&
+operator>>( istream & in, Card & c )
+{
 	Card::Rank r{0};
 	Card::Suit s{0};
 	in >> r >> s;
@@ -65,16 +86,26 @@ istream & operator>>( istream & in, Card & c ) {
 	return in;
 } // operator>>
 
-Card::Suit::Suit( int s ) {
+Card::Suit::Suit( int s )
+{
 	if ( s < 0 || s >= Card::Suit::MAX_SUIT ) throw "Invalid suit";
-	suit_ = s;
+	mySuit = s;
 }
 
-int Card::Suit::suit() const { return suit_; }
+int
+Card::Suit::suit() const
+{
+    return mySuit;
+}
 
-Card::Rank::Rank( int r ) {
+Card::Rank::Rank( int r )
+{
 	if ( r < 0 || r >= Card::Rank::MAX_RANK ) throw "Invalid rank";
-	rank_ = r;	
+	myRank = r;	
 }
 
-int Card::Rank::rank() const { return rank_; }
+int
+Card::Rank::rank() const
+{
+    return myRank;
+}
