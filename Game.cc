@@ -1,21 +1,39 @@
+#include <algorithm>
 #include <iostream>
 #include <string>
+
 #include "Game.h"
 
 Game::Game()
 {
-    // we only have 4 suits
-    myTable.reserve(4);
+    myTable.resize(4);
+}
+
+void Game::startGame()
+{
+  for (int i = 0; i < 4; i++)
+  {
+    char x;
+    std::cout << "Is player " << i << " a human(h) or a computer(c)?\n";
+    std::cin >> x;
+    Player* p = new Player(x);
+    myPlayers.push_back(p);
+  }
 }
 
 void Game::play()
 {
     while(!isGameOver())
     {
+        std::cout << "Starting round" << std::endl;
         startRound();
         while(!isRoundOver())
+        {
+            std::cout << "polling player " << std::endl;
             pollNextPlayer();
+        }
         endRound();
+        std::cout << "ending round" << std::endl;
     }
     printWinners();
 }
@@ -24,133 +42,173 @@ void Game::play()
 void
 Game::pollNextPlayer()
 {
-    Player& p = myPlayers[myCurrentPlayer];
-    const std::vector<Card> &hand = p.hand();
-    std::vector<Card> &legalPlays;
-    if( p.type() == Player::Type::Human)
+    Player* p = myPlayers[myCurrentPlayer];
+    const std::vector<Card*> &hand = p->hand();
+    std::vector<Card*> legalPlays;
+    if( p->type() == Player::Type::HUMAN)
     {
-        static const std::string suits[4] = {"Clubs", "Diamonds", "Hearts", "Spades"};
+        const std::string suits[4] = {"Clubs", "Diamonds", "Hearts", "Spades"};
         for(int i = 0; i < 4; ++i)
         {
             std::cout << suits[i];
-            printCardList(myTable(i));
+            printCardList(myTable[i]);
         }
         std::cout << "Your hand:";
-        printCardList(p.hand());
+        printCardList(p->hand());
         std::cout << "Legal plays";
         constructLegalPlays(hand, legalPlays);
         printCardList(legalPlays);
+        std::cout << ">\n";
         humanPlay(p, legalPlays);
     }
-    else if ( p.type() == Player::Type::COMPUTER)
+    else if ( p->type() == Player::Type::COMPUTER)
     {
-        const std::vector <Card> &hand = p.hand();
-        std:: vector <Card> legalPlays;
+        std::cout << "computer" << std::endl;
+        const std::vector <Card*> &hand = p->hand();
+        std:: vector <Card*> legalPlays;
         constructLegalPlays(hand,legalPlays);
         if (legalPlays.empty())
         {
-          p.discard(hand[0]);
+          p->discard(hand[0]);
         }
         else
         {
-          p.play(legalPlays[0]);
-          int suit = legalPlays[0].suit().suit();
-          int rank = legalPlays[0].rank().rank();
-          std::vector<Card>::iterator it = myTable[suit].begin();
-          for (; myTable[suit].end() != it; ++it)
+          std::cout << "computer" << std::endl;
+          bool first = false;
+          for (Card* c : p->hand())
           {
-            if (it.rank().rank() < rank)
+            if (c->rank().rank() == 6 && c->suit().suit() == 3)
             {
-              break;
+              p->play(c);
+              myTable[3].push_back(c);
+              first = true;
             }
           }
-          myTable[suit].insert(it,legalPlays[0]);
+          if (!first)
+          {
+            p->play(legalPlays[0]);
+            std::cout << "played " << *legalPlays[0] << std::endl;
+            int suit = legalPlays[0]->suit().suit();
+            int rank = legalPlays[0]->rank().rank();
+            if (myTable[suit].empty()){
+              myTable[suit].push_back(legalPlays[0]);
+            }
+            else if (myTable[suit].front()->rank().rank() > rank)
+            { //put the card in the front
+              myTable[suit].insert(myTable[suit].begin(),legalPlays[0]);
+            }
+            else
+            {
+              myTable[suit].push_back(legalPlays[0]);
+            }
+          }
         }
     }
-    myCurrentPlayer++;
+    myCurrentPlayer = (myCurrentPlayer+1)%4;
 }
 
-Command
-Game::getCommand()
+static bool findCard(const std::vector<Card*> v, const Card* c)
 {
-    Command c;
-    Card card;
-    std::cin >> c;
-    if(c.command != Command::Type::PLAY && c.command != Command::Type::DISCARD)
-        return c;
-    std::cin >> card;
-    c.card = card;
-    return c;
+    for(const Card* card : v)
+    {
+        if(*c == *card)
+            return true;
+    }
+    return false;
 }
 
 void
-Game::humanPlay(Player &player, const std::vector<Card> &legalPlays)
+Game::humanPlay(Player*player, const std::vector<Card*> &legalPlays)
 {
-    const std::vector<Card> &hand = player.hand();
+    const std::vector<Card*> &hand = player->hand();
     bool legal = false;
     while(!legal)
     {
-        Command c = getCommand();
-        using namespace Command::Type;
-        switch(c.Type)
+        Command c;
+        std::cin >> c;
+        switch(c.type)
         {
-            case PLAY:
-                if(std::find(legalPlays.begin(), legalPlays.end(), c.Card) != legalPlays.end())
+            case Command::Type::PLAY:
+                if(findCard(legalPlays, &c.card))
                 {
                     legal = true;
-                    std::cout << "Player " << myCurrentPlayer << " plays " << c.Card << std::endl;
-                    p.play(c.Card);
+                    std::cout << "Player " << myCurrentPlayer << " plays " << c.card << std::endl;
+                    player->play(&c.card);
+                    Card* temp;
+                    for (Card* runner : legalPlays)
+                    {
+                      if (*runner == c.card)
+                          temp = runner;
+                    }
+                    int suit = temp->suit().suit();
+                    int rank = temp->rank().rank();
+                    if (myTable[suit].empty()){
+                      myTable[suit].push_back(temp);
+                    }
+                    else if (myTable[suit].front()->rank().rank() > rank)
+                    { //put the card in the front
+                      myTable[suit].insert(myTable[suit].begin(),temp);
+                    }
+                    else
+                    {
+                      myTable[suit].push_back(temp);
+                    }
                 }
                 else
                     std::cout << "This is not a legal play." << std::endl;
                 break;
-            case DISCARD:
+            case Command::Type::DISCARD:
                 if(legalPlays.empty())
                 {
                     legal = true;
-                    std::cout << "Player " << myCurrentPlayer << " discards " << c.Card << std::endl;
-                    p.discard(c.Card);
+                    std::cout << "Player " << myCurrentPlayer << " discards " << c.card << std::endl;
+                    player->discard(&c.card);
                 }
                 else
                     std::cout << "You have a legal play. You may not discard." << std::endl;
                 break;
-            case DECK:
+            case Command::Type::DECK:
                 for(int i = 0; i < 4; i++)
-                    printCardList(std::vector<Card>(myDeck.begin() + i*13, myDeck.begin() + (i+1)*13));
+                    printCardList(myDeck.cards(i*13,(i+1)*13));
                 break;
-            case QUIT:
+            case Command::Type::QUIT:
                 std::cout << "Need to implement exception throw once main is written" << std::endl;
                 // throw exception to quit
                 break;
-            case RAGEQUIT:
+            case Command::Type::RAGEQUIT:
                 std::cout << "Player " << myCurrentPlayer << " ragequits. A computer will now take over." << std::endl;
-                p.ragequit();
+                player->rageQuit();
                 break;
             default:
                 std::cout << "!!!!!!!!!uh this shouldnt happen :))!!!!!!!!!" << std::endl;
+                break;
         }
+    }
 }
 
 void
-Game::constructLegalPlays(const std::vector<Card> &hand, std::vector<Card>& plays)
+Game::constructLegalPlays(const std::vector<Card*> &hand, std::vector<Card*>& plays)
 {
-    for (const Card& c : hand)
+    for (Card* c : hand)
     {
-        if (c == Card(Card::Rank(7), Card::Suit(0)) || c == Card(Card::Rank(7), Card::Suit(1)) ||
-            c == Card(Card::Rank(7), Card::Suit(2)) || c == Card(Card::Rank(7), Card::Suit(3)))
+        if (*c == Card(Card::Rank(6), Card::Suit(0)) || *c == Card(Card::Rank(6), Card::Suit(1)) ||
+            *c == Card(Card::Rank(6), Card::Suit(2)) || *c == Card(Card::Rank(6), Card::Suit(3)))
             plays.push_back(c);
 
-        for (const std::vector<Card>& v : gameTable)
+        for (const std::vector<Card*>& v : myTable)
         {
-            if (!v.empty() && v[0].suit().suit() == c.suit().suit())
+            // std::cout << "card rank " << c->rank().rank() << std::endl;
+            if (!v.empty() && v[0]->suit().suit() == c->suit().suit())
             {
-                Card front = v[0];
-                if (front.rank().rank() == c.rank().rank() + 1)
+                Card *front = v[0];
+                // std::cout << "front " << front->rank().rank() << std::endl;
+                if (front->rank().rank() == c->rank().rank() + 1)
                     plays.push_back(c);
                 else
                 {
-                    Card back = v.back();
-                    if (back.rank().rank() == c.rank().rank() - 1)
+                    Card *back = v.back();
+                    // std::cout << "back " << back->rank().rank() << std::endl;
+                    if (back->rank().rank() == c->rank().rank() - 1)
                         plays.push_back(c);
                 }
             }
@@ -161,31 +219,32 @@ Game::constructLegalPlays(const std::vector<Card> &hand, std::vector<Card>& play
 void
 Game::startRound()
 {
-    myDeck = myLastDeck;
+    //myDeck = myLastDeck;
     myDeck.shuffle();
 
-    for(std::vector<Card>& list:myTable)
+    for(std::vector<Card*>& list:myTable)
         list.clear();
 
     for(int i = 0; i < myPlayers.size(); ++i)
     {
-        Player& p = myPlayers[i];
-        const std::vector<Card>& cards = myDeck.cards(i*13, (i+1)*13);
-        for(Card c: cards)
+        Player* p = myPlayers[i];
+        const std::vector<Card*>& cards = myDeck.cards(i*13, (i+1)*13);
+        for(const Card *c: cards)
         {
-            if(c.suit() == Card::Suit::SPADE && c.rank() == Card::Rank::SEVEN)
+            if(c->suit().suit() == Card::Suit::SPADE
+                && c->rank().rank() == Card::Rank::SEVEN)
                 myCurrentPlayer = i;
         }
-        p.deal(cards);
+        p->deal(cards);
     }
 }
 
 bool
-ame::isGameOver() const
+Game::isGameOver() const
 {
-    for(Player p: myPlayers)
+    for(const Player* p: myPlayers)
     {
-        if(p.score() >= 80)
+        if(p->score() >= 80)
             return true;
     }
     return false;
@@ -194,29 +253,30 @@ ame::isGameOver() const
 bool
 Game::isRoundOver() const
 {
-    for(const Player& p: myPlayers)
+    for(const Player* p: myPlayers)
     {
-        if(p.hand().size())
-            return true;
+        if(p->hand().size())
+            return false;
     }
-    return false;
+    return true;
 }
 
 void
 Game::endRound()
 {
-    for(int i = 0; i < myPlayers.size(); ++i)
+    for(int i = 0; i < myPlayers.size(); i++)
     {
-        std::cout << "Player " << i << "'s discards:" <<
-        int old = p.score();
-        const std::vector<Card>&  discarded = p.discarded();
-        for(Card c: discarded)
+        const Player* p = myPlayers[i];
+        std::cout << "Player " << i << "'s discards:";
+        int old = p->score();
+        const std::vector<Card*>&  discarded = p->discarded();
+        for(const Card *c: discarded)
         {
-            old -= c.rank().rank();
-            std::cout << " " << c;
+            old -= c->rank().rank();
+            std::cout << " " << *c;
         }
         std::cout << std::endl;
-        std::cout << "Player " << i << "'s score: " << old << " + " << (p.score() - old) << " = " << p.score();
+        std::cout << "Player " << i << "'s score: " << old << " + " << (p->score() - old) << " = " << p->score() << std::endl;
     }
 }
 
@@ -225,17 +285,16 @@ Game::printWinners() const
 {
     for(int i = 0; i < myPlayers.size(); ++i)
     {
-        if(p.score() >= 80)
-            std::cout << "Player " << i << " wins!" << std::endl;
+        const Player* p = myPlayers[i];
+        std::cout << "Player's score is " << p->score() << std::endl;
     }
 }
 
 void
-Game::printCardList(const std::vector<Card>& list) const
+Game::printCardList(const std::vector<Card*>& list) const
 {
-    for(Card c: list)
-    {
-        std::cout << " " << c;
-    }
-    std::cout << endl;
+    for(const Card *c: list)
+        std::cout << " " << *c;
+
+    std::cout << std::endl;
 }
