@@ -14,7 +14,8 @@ public:
     Game();
     Game& Game(const Game&) = delete;
     Game& operator= (const Game&) = delete;
-    play();
+    void play();
+
 
 private:
     vector<Player> myPlayers;
@@ -22,7 +23,14 @@ private:
     unsigned int        myCurrentPlayer;
     Deck                myDeck;
 
+    void startRound();
+    void endRound();
+    void constructLegalPlays();
     void pollNextPlayer();
-    bool isGameOver();
-    void printWinners();
+
+    bool isRoundOver() const;
+    bool isGameOver() const;
+
+    void printWinners() const;
+    void printCardList(const std::vector<Card>& ) const;
 };

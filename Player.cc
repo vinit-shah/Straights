@@ -11,7 +11,13 @@ Player::Player(char c) : myScore(0) {
 
 Player::~Player() {}
 
-void Player::play(const Card& card) {
+type Player::type() const
+{
+  return playerType;
+}
+
+void Player::play(const Card& card)
+{
   for (const Card& c : myHand) {
     if (c == card){
       myHand.erase(c);
@@ -31,7 +37,8 @@ void Player::discard(const Card& card)
   incrementScore(card.rank().rank());
 }
 
-void Player::rageQuit() {
+void Player::rageQuit()
+{
   playerType = COMPUTER;
 }
 

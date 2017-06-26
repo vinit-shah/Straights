@@ -8,7 +8,7 @@ Game::Game()
     myTable.reserve(4);
 }
 
-Game::play()
+void Game::play()
 {
     while(!isGameOver())
     {
@@ -19,6 +19,7 @@ Game::play()
     }
     printWinners();
 }
+
 
 void
 Game::pollNextPlayer()
@@ -41,9 +42,31 @@ Game::pollNextPlayer()
         printCardList(legalPlays);
         humanPlay(p, legalPlays);
     }
-    else
-        computerPlay(p, legalPlays);
-    
+    else if ( p.type() == Player::Type::COMPUTER)
+    {
+        const std::vector <Card> &hand = p.hand();
+        std:: vector <Card> legalPlays;
+        constructLegalPlays(hand,legalPlays);
+        if (legalPlays.empty())
+        {
+          p.discard(hand[0]);
+        }
+        else
+        {
+          p.play(legalPlays[0]);
+          int suit = legalPlays[0].suit().suit();
+          int rank = legalPlays[0].rank().rank();
+          std::vector<Card>::iterator it = myTable[suit].begin();
+          for (; myTable[suit].end() != it; ++it)
+          {
+            if (it.rank().rank() < rank)
+            {
+              break;
+            }
+          }
+          myTable[suit].insert(it,legalPlays[0]);
+        }
+    }
     myCurrentPlayer++;
 }
 
@@ -116,7 +139,7 @@ Game::constructLegalPlays(const std::vector<Card> &hand, std::vector<Card>& play
         if (c == Card(Card::Rank(7), Card::Suit(0)) || c == Card(Card::Rank(7), Card::Suit(1)) ||
             c == Card(Card::Rank(7), Card::Suit(2)) || c == Card(Card::Rank(7), Card::Suit(3)))
             plays.push_back(c);
-    
+
         for (const std::vector<Card>& v : gameTable)
         {
             if (!v.empty() && v[0].suit().suit() == c.suit().suit())
@@ -135,11 +158,12 @@ Game::constructLegalPlays(const std::vector<Card> &hand, std::vector<Card>& play
     }
 }
 
-void startRound()
+void
+Game::startRound()
 {
     myDeck = myLastDeck;
     myDeck.shuffle();
-    
+
     for(std::vector<Card>& list:myTable)
         list.clear();
 
@@ -149,14 +173,15 @@ void startRound()
         const std::vector<Card>& cards = myDeck.cards(i*13, (i+1)*13);
         for(Card c: cards)
         {
-            if(c.suit == Card::Suit::SPADE && c.rank() == Card::Rank::SEVEN)
+            if(c.suit() == Card::Suit::SPADE && c.rank() == Card::Rank::SEVEN)
                 myCurrentPlayer = i;
         }
         p.deal(cards);
     }
 }
 
-bool isGameOver()
+bool
+ame::isGameOver() const
 {
     for(Player p: myPlayers)
     {
@@ -166,7 +191,8 @@ bool isGameOver()
     return false;
 }
 
-bool isRoundOver()
+bool
+Game::isRoundOver() const
 {
     for(const Player& p: myPlayers)
     {
@@ -176,11 +202,12 @@ bool isRoundOver()
     return false;
 }
 
-void endRound()
+void
+Game::endRound()
 {
     for(int i = 0; i < myPlayers.size(); ++i)
     {
-        std::cout << "Player " << i << "'s discards:" <<  
+        std::cout << "Player " << i << "'s discards:" <<
         int old = p.score();
         const std::vector<Card>&  discarded = p.discarded();
         for(Card c: discarded)
@@ -193,7 +220,8 @@ void endRound()
     }
 }
 
-void printWinners()
+void
+Game::printWinners() const
 {
     for(int i = 0; i < myPlayers.size(); ++i)
     {
@@ -202,7 +230,8 @@ void printWinners()
     }
 }
 
-void printCardList(const std::vector<Card>& list)
+void
+Game::printCardList(const std::vector<Card>& list) const
 {
     for(Card c: list)
     {

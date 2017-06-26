@@ -22,6 +22,7 @@ class Player
     void discard(const Card& card);
     void rageQuit();
     void deal(std::vector<Card>&);
+    type type() const;
     const std::vector <Card>& hand() const;
     const std::vector<Card>& discarded() const;
     int getScore() const;
