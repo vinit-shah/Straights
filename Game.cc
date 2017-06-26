@@ -20,9 +20,12 @@ Game::play()
     printWinners();
 }
 
-void pollNextPlayer()
+void
+Game::pollNextPlayer()
 {
-    Player& p = myPlayers[myCurrentPlayer++];
+    Player& p = myPlayers[myCurrentPlayer];
+    const std::vector<Card> &hand = p.hand();
+    std::vector<Card> &legalPlays;
     if( p.type() == Player::Type::Human)
     {
         static const std::string suits[4] = {"Clubs", "Diamonds", "Hearts", "Spades"};
@@ -32,31 +35,81 @@ void pollNextPlayer()
             printCardList(myTable(i));
         }
         std::cout << "Your hand:";
-        const std::vector<Card> &hand = p.hand();
         printCardList(p.hand());
         std::cout << "Legal plays";
-        std::vector<Card> &legalPlays;
         constructLegalPlays(hand, legalPlays);
         printCardList(legalPlays);
-        
+        humanPlay(p, legalPlays);
     }
+    else
+        computerPlay(p, legalPlays);
+    
+    myCurrentPlayer++;
 }
 
-Card
-getHumanInput()
+Command
+Game::getCommand()
 {
-    std::string command, card;
-    std::cin >> command;
-    if(command == "play")
-    {
-    }
-    else if(command == "discard")
-    {
-    }
-
+    Command c;
+    Card card;
+    std::cin >> c;
+    if(c.command != Command::Type::PLAY && c.command != Command::Type::DISCARD)
+        return c;
+    std::cin >> card;
+    c.card = card;
+    return c;
 }
 
-void constructLegalPlays(const std::vector<Card> &hand, std::vector<Card>& plays)
+void
+Game::humanPlay(Player &player, const std::vector<Card> &legalPlays)
+{
+    const std::vector<Card> &hand = player.hand();
+    bool legal = false;
+    while(!legal)
+    {
+        Command c = getCommand();
+        using namespace Command::Type;
+        switch(c.Type)
+        {
+            case PLAY:
+                if(std::find(legalPlays.begin(), legalPlays.end(), c.Card) != legalPlays.end())
+                {
+                    legal = true;
+                    std::cout << "Player " << myCurrentPlayer << " plays " << c.Card << std::endl;
+                    p.play(c.Card);
+                }
+                else
+                    std::cout << "This is not a legal play." << std::endl;
+                break;
+            case DISCARD:
+                if(legalPlays.empty())
+                {
+                    legal = true;
+                    std::cout << "Player " << myCurrentPlayer << " discards " << c.Card << std::endl;
+                    p.discard(c.Card);
+                }
+                else
+                    std::cout << "You have a legal play. You may not discard." << std::endl;
+                break;
+            case DECK:
+                for(int i = 0; i < 4; i++)
+                    printCardList(std::vector<Card>(myDeck.begin() + i*13, myDeck.begin() + (i+1)*13));
+                break;
+            case QUIT:
+                std::cout << "Need to implement exception throw once main is written" << std::endl;
+                // throw exception to quit
+                break;
+            case RAGEQUIT:
+                std::cout << "Player " << myCurrentPlayer << " ragequits. A computer will now take over." << std::endl;
+                p.ragequit();
+                break;
+            default:
+                std::cout << "!!!!!!!!!uh this shouldnt happen :))!!!!!!!!!" << std::endl;
+        }
+}
+
+void
+Game::constructLegalPlays(const std::vector<Card> &hand, std::vector<Card>& plays)
 {
     for (const Card& c : hand)
     {
