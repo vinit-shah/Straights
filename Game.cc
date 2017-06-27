@@ -9,6 +9,15 @@ Game::Game()
     myTable.resize(4);
 }
 
+Game::~Game()
+{
+    for (Player * p : myPlayers)
+    {
+      delete p;
+    }
+    myPlayers.resize(0);
+}
+
 void Game::startGame()
 {
   for (int i = 0; i < 4; i++)
@@ -64,45 +73,8 @@ Game::pollNextPlayer()
     else if ( p->type() == Player::Type::COMPUTER)
     {
         std::cout << "computer" << std::endl;
-        const std::vector <Card*> &hand = p->hand();
-        std:: vector <Card*> legalPlays;
         constructLegalPlays(hand,legalPlays);
-        if (legalPlays.empty())
-        {
-          p->discard(hand[0]);
-        }
-        else
-        {
-          std::cout << "computer" << std::endl;
-          bool first = false;
-          for (Card* c : p->hand())
-          {
-            if (c->rank().rank() == 6 && c->suit().suit() == 3)
-            {
-              p->play(c);
-              myTable[3].push_back(c);
-              first = true;
-            }
-          }
-          if (!first)
-          {
-            p->play(legalPlays[0]);
-            std::cout << "played " << *legalPlays[0] << std::endl;
-            int suit = legalPlays[0]->suit().suit();
-            int rank = legalPlays[0]->rank().rank();
-            if (myTable[suit].empty()){
-              myTable[suit].push_back(legalPlays[0]);
-            }
-            else if (myTable[suit].front()->rank().rank() > rank)
-            { //put the card in the front
-              myTable[suit].insert(myTable[suit].begin(),legalPlays[0]);
-            }
-            else
-            {
-              myTable[suit].push_back(legalPlays[0]);
-            }
-          }
-        }
+        computerPlay(p,legalPlays);
     }
     myCurrentPlayer = (myCurrentPlayer+1)%4;
 }
@@ -178,11 +150,53 @@ Game::humanPlay(Player*player, const std::vector<Card*> &legalPlays)
             case Command::Type::RAGEQUIT:
                 std::cout << "Player " << myCurrentPlayer << " ragequits. A computer will now take over." << std::endl;
                 player->rageQuit();
-                break;
+                computerPlay(player,legalPlays);
+                return;
             default:
                 std::cout << "!!!!!!!!!uh this shouldnt happen :))!!!!!!!!!" << std::endl;
                 break;
         }
+    }
+}
+
+void
+Game::computerPlay(Player* p, const std::vector<Card*> & legalPlays)
+{
+    if (legalPlays.empty())
+    {
+      p->discard(p->hand()[0]);
+    }
+    else
+    {
+      std::cout << "computer" << std::endl;
+      bool first = false;
+      for (Card* c : p->hand())
+      {
+        if (c->rank().rank() == 6 && c->suit().suit() == 3)
+        {
+          p->play(c);
+          myTable[3].push_back(c);
+          first = true;
+        }
+      }
+      if (!first)
+      {
+        p->play(legalPlays[0]);
+        std::cout << "played " << *legalPlays[0] << std::endl;
+        int suit = legalPlays[0]->suit().suit();
+        int rank = legalPlays[0]->rank().rank();
+        if (myTable[suit].empty()){
+          myTable[suit].push_back(legalPlays[0]);
+        }
+        else if (myTable[suit].front()->rank().rank() > rank)
+        { //put the card in the front
+          myTable[suit].insert(myTable[suit].begin(),legalPlays[0]);
+        }
+        else
+        {
+          myTable[suit].push_back(legalPlays[0]);
+        }
+      }
     }
 }
 
