@@ -98,5 +98,8 @@ Player::constructLegalPlays(const std::vector< std::vector <Card*> >& gameTable)
           }
       }
   }
+  std::cout << "LEGAL PLAYS " << std::endl;
+  for(Card* c : plays)
+      std::cout << *c << std::endl;
   return plays;
 }

@@ -28,7 +28,7 @@ void Game::startGame()
     std::cout << "Is player " << i << " a human(h) or a computer(c)?\n";
     std::cin >> x;
     Player* p;
-    if(i == 'h')
+    if(x == 'h')
         p = new Human();
     else
         p = new Computer();
@@ -64,6 +64,7 @@ void
 Game::pollNextPlayer()
 {
     Player* p = myPlayers[myCurrentPlayer];
+    std::cout << "playing" << std::endl;
     Command c = p->play(myTable);
     if(c.type == Command::Type::PLAY)
     {

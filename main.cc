@@ -5,8 +5,11 @@
 
 int main()
 {
-
-  Game game;
-  game.startGame();
-  game.play();
+    Game game;
+    game.startGame();
+    try
+    {
+        game.play();
+    }
+    catch(std::exception & e){}
 }

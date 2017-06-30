@@ -11,6 +11,7 @@ Computer::~Computer() {}
 const Command
 Computer::play(const std::vector< std::vector <Card*> >& gameTable)
 {
+    std::cout << "computer is playing" << std::endl;
   std::vector<Card*> legalPlays = constructLegalPlays(gameTable);
   Command command;
   if (legalPlays.empty())

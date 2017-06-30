@@ -17,9 +17,9 @@ Human::play(const std::vector< std::vector <Card*> >& gameTable)
     Command c;
     while(!legal)
     {
-      std::cin >> c;
-      if (c.type == Command::Type::PLAY)
-      {
+        std::cin >> c;
+        if (c.type == Command::Type::PLAY)
+        {
         if(findCard(legalPlays, c.card))
         {
             legal = true;
@@ -27,9 +27,9 @@ Human::play(const std::vector< std::vector <Card*> >& gameTable)
         }
         else
             std::cout << "This is not a legal play." << std::endl;
-      }
-      else if (c.type == Command::Type::DISCARD)
-      {
+        }
+        else if (c.type == Command::Type::DISCARD)
+        {
         if(legalPlays.empty())
         {
             legal = true;
@@ -37,7 +37,7 @@ Human::play(const std::vector< std::vector <Card*> >& gameTable)
         }
         else
             std::cout << "You have a legal play. You may not discard." << std::endl;
-      }
+        }
     }
     return c;
 }
