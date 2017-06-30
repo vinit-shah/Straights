@@ -12,7 +12,8 @@ class Player
     Player();
     virtual ~Player();
     Player(const Player&) = delete;
-    Player&(Player&&);
+
+    Player& clone(Player& player);
 
     void deal(const std::vector<Card*>&);
     const std::vector <Card*>& hand() const;

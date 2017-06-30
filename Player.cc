@@ -6,11 +6,12 @@ Player::Player() : myScore(0) {}
 
 Player::~Player() {}
 
-Player& (Player && player)
+Player&
+clone (Player & player)
 {
-    myHand = std::move(myHand,player.myHand);
-    myDiscardedPile = std::move(myDiscardedPile,player.myDiscardedPile);
-    myScore = std::move(myScore,player.myScore);
+    myHand = player.myHand;
+    myDiscardedPile = player.myDiscardedPile;
+    myScore = player.myScore;
     return *this;
 }
 
