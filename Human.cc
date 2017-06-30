@@ -18,30 +18,27 @@ Human::play(const std::vector< std::vector <Card*> >& gameTable)
   while(!legal)
   {
       std::cin >> c;
-      switch(c.type)
+      if (c.type == Command::Type::PLAY)
       {
-          case Command::Type::PLAY:
-              if(findCard(legalPlays, c.card))
-              {
-                  legal = true;
-                  std::cout << "Player " << myCurrentPlayer << " plays " << c.card << std::endl;
-                  playCard(c.card);
-              }
-              else
-                  std::cout << "This is not a legal play." << std::endl;
-              break;
-          case Command::Type::DISCARD:
-              if(legalPlays.empty())
-              {
-                  legal = true;
-                  std::cout << "Player " << myCurrentPlayer << " discards " << c.card << std::endl;
-                  player->discard(c.card);
-              }
-              else
-                  std::cout << "You have a legal play. You may not discard." << std::endl;
-              break;
-          default:
-              break;
+        if(findCard(legalPlays, c.card))
+        {
+            legal = true;
+            std::cout << "Player " << myCurrentPlayer << " plays " << c.card << std::endl;
+            playCard(c.card);
+        }
+        else
+            std::cout << "This is not a legal play." << std::endl;
+      }
+      else if (c.type == Command::Type::DISCARD)
+      {
+        if(legalPlays.empty())
+        {
+            legal = true;
+            std::cout << "Player " << myCurrentPlayer << " discards " << c.card << std::endl;
+            player->discard(c.card);
+        }
+        else
+            std::cout << "You have a legal play. You may not discard." << std::endl;
       }
   }
   return c;
