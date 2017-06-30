@@ -1,2 +1,5 @@
 *.o
 *.d
+sampleStraights
+straights
+.DS_Store

@@ -25,7 +25,7 @@ void Game::startGame()
     char x;
     std::cout << "Is player " << i << " a human(h) or a computer(c)?\n";
     std::cin >> x;
-    Player* p = new Player(x);
+    Player* p = i == 'h' ? new HumanPlayer() : new ComputerPlayer();
     myPlayers.push_back(p);
   }
 }
@@ -114,17 +114,13 @@ Game::humanPlay(Player*player, const std::vector<Card*> &legalPlays)
                     }
                     int suit = temp->suit().suit();
                     int rank = temp->rank().rank();
-                    if (myTable[suit].empty()){
-                      myTable[suit].push_back(temp);
-                    }
+
+                    if (myTable[suit].empty())
+                        myTable[suit].push_back(temp);
                     else if (myTable[suit].front()->rank().rank() > rank)
-                    { //put the card in the front
-                      myTable[suit].insert(myTable[suit].begin(),temp);
-                    }
+                        myTable[suit].insert(myTable[suit].begin(),temp);
                     else
-                    {
-                      myTable[suit].push_back(temp);
-                    }
+                        myTable[suit].push_back(temp);
                 }
                 else
                     std::cout << "This is not a legal play." << std::endl;
@@ -148,9 +144,13 @@ Game::humanPlay(Player*player, const std::vector<Card*> &legalPlays)
                 // throw exception to quit
                 break;
             case Command::Type::RAGEQUIT:
-                std::cout << "Player " << myCurrentPlayer << " ragequits. A computer will now take over." << std::endl;
-                player->rageQuit();
-                computerPlay(player,legalPlays);
+                {
+                    std::cout << "Player " << myCurrentPlayer << " ragequits. A computer will now take over." << std::endl;
+                    Player *newPlayer = new ComputerPlayer();
+                    *newPlayer = std::move(*player);
+                    delete player;
+                    myPlayers[myCurrentPlayer] = newPlayer;
+                }
                 return;
             default:
                 std::cout << "!!!!!!!!!uh this shouldnt happen :))!!!!!!!!!" << std::endl;
