@@ -11,19 +11,18 @@ Human::~Human() {}
 const Command
 Human::play(const std::vector< std::vector <Card*> >& gameTable)
 {
-  print();
-  std::vector <Card*> legalPlays = constructLegalPlays(gameTable);
-  bool legal = false;
-  Command c;
-  while(!legal)
-  {
+    print(gameTable);
+    std::vector <Card*> legalPlays = constructLegalPlays(gameTable);
+    bool legal = false;
+    Command c;
+    while(!legal)
+    {
       std::cin >> c;
       if (c.type == Command::Type::PLAY)
       {
         if(findCard(legalPlays, c.card))
         {
             legal = true;
-            std::cout << "Player " << myCurrentPlayer << " plays " << c.card << std::endl;
             playCard(c.card);
         }
         else
@@ -34,14 +33,13 @@ Human::play(const std::vector< std::vector <Card*> >& gameTable)
         if(legalPlays.empty())
         {
             legal = true;
-            std::cout << "Player " << myCurrentPlayer << " discards " << c.card << std::endl;
-            player->discard(c.card);
+            discard(c.card);
         }
         else
             std::cout << "You have a legal play. You may not discard." << std::endl;
       }
-  }
-  return c;
+    }
+    return c;
 }
 
 void
@@ -65,6 +63,7 @@ void
 Human::discard(const Card& card)
 {
   int index = findCard(myHand, card);
+  myDiscardedPile.push_back(myHand[index]);
   myHand.erase(myHand.begin() + index);
 }
 

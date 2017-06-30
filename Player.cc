@@ -7,7 +7,7 @@ Player::Player() : myScore(0) {}
 Player::~Player() {}
 
 Player&
-clone (Player & player)
+Player::clone (Player & player)
 {
     myHand = player.myHand;
     myDiscardedPile = player.myDiscardedPile;
@@ -15,26 +15,30 @@ clone (Player & player)
     return *this;
 }
 
-void Player::deal(const std::vector<Card*> & cards)
+void
+Player::deal(const std::vector<Card*> & cards)
 {
-  myHand.clear();
-  myDiscardedPile.clear();
-  for (Card* c : cards){
-    myHand.push_back(c);
-  }
+    myHand.clear();
+    myDiscardedPile.clear();
+    for (Card* c : cards){
+        myHand.push_back(c);
+    }
 }
 
-const std::vector<Card*>& Player::hand() const
+const std::vector<Card*>&
+Player::hand() const
 {
-  return myHand;
+      return myHand;
 }
 
-const std::vector<Card*>& Player::discarded() const
+const std::vector<Card*>&
+Player::discarded() const
 {
   return myDiscardedPile;
 }
 
-int Player::score() const
+int
+Player::score() const
 {
   return myScore;
 }
@@ -46,7 +50,7 @@ Player::findCard(const std::vector<Card*>& v, const Card& c)
   int ret = -1;
     for(int i = 0; i < v.size(); ++i)
     {
-        if(*v[i] == card)
+        if(*v[i] == c)
             return i;
     }
     return ret;
@@ -65,7 +69,8 @@ Player::playCard(const Card& card)
   myHand.erase(myHand.begin() + index);
 }
 
-std::vector<Card*> constructLegalPlays(const std::vector< std::vector <Card*> >& gameTable)
+std::vector<Card*>
+Player::constructLegalPlays(const std::vector< std::vector <Card*> >& gameTable) const
 {
   std::vector<Card*> plays;
   for (Card* c : myHand)

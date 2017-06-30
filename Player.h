@@ -33,5 +33,5 @@ class Player
 
     virtual void discard(const Card& card) = 0;
     virtual void print(const std::vector< std::vector <Card*> >& gameTable) const = 0;
-    std::vector<Card*> constructLegalPlays(const std::vector< std::vector <Card*> >& gameTable);
+    std::vector<Card*> constructLegalPlays(const std::vector< std::vector <Card*> >& gameTable) const;
 };

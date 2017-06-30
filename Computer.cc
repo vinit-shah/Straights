@@ -11,11 +11,11 @@ Computer::~Computer() {}
 const Command
 Computer::play(const std::vector< std::vector <Card*> >& gameTable)
 {
-  std::vector<Card*> legalsPlays = constructLegalPlays(gameTable);
+  std::vector<Card*> legalPlays = constructLegalPlays(gameTable);
   Command command;
   if (legalPlays.empty())
   {
-    discard();
+    discard(*myHand[0]);
     command.type = Command::Type::DISCARD;
   }
   else
@@ -35,7 +35,7 @@ Computer::play(const std::vector< std::vector <Card*> >& gameTable)
     }
     if (!first)
     {
-      playCard(legalPlays[0]);
+      playCard(*legalPlays[0]);
       command.card = *legalPlays[0];
     }
   }
@@ -43,7 +43,7 @@ Computer::play(const std::vector< std::vector <Card*> >& gameTable)
 }
 
 void
-Computer::discard()
+Computer::discard(const Card& card)
 {
   myDiscardedPile.push_back(myHand[0]);
   incrementScore(myHand[0]->rank().rank());
@@ -51,7 +51,7 @@ Computer::discard()
 }
 
 void
-Computer::print() const
+Computer::print(const std::vector< std::vector <Card*> >& gameTable) const
 {
   return;
 }

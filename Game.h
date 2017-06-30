@@ -19,7 +19,7 @@ public:
 
 private:
     std::vector<Player*> myPlayers;
-    std::vector<std::vector<Card*>> myTable;
+    std::vector<std::vector<Card*> > myTable;
     unsigned int        myCurrentPlayer;
     Deck                myDeck;
 

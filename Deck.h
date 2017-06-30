@@ -9,6 +9,7 @@ public:
     Deck();
     ~Deck();
     const std::vector<Card*> cards(unsigned int start, unsigned int end) const;
+    Card* find(const Card& card);
     void shuffle();
 
 private:

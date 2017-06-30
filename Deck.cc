@@ -23,6 +23,17 @@ Deck::cards(unsigned int start, unsigned int end) const
     return std::vector<Card*>(myCards.begin() + start, myCards.begin() + end);
 }
 
+Card*
+Deck::find(const Card& card)
+{
+    for(Card *c : myCards)
+    {
+        if(*c == card)
+            return c;
+    }
+    return nullptr;
+}
+
 void
 Deck::shuffle() {
   static std::mt19937 rng(0);
