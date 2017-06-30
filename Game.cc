@@ -38,7 +38,7 @@ void Game::play()
         startRound();
         while(!isRoundOver())
         {
-            std::cout << "polling player " << std::endl;
+            // std::cout << "polling player " << std::endl;
             pollNextPlayer();
         }
         endRound();
@@ -72,7 +72,7 @@ Game::pollNextPlayer()
     }
     else if ( p->type() == Player::Type::COMPUTER)
     {
-        std::cout << "computer" << std::endl;
+        // std::cout << "computer" << std::endl;
         constructLegalPlays(hand,legalPlays);
         computerPlay(p,legalPlays);
     }

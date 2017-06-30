@@ -1,6 +1,0 @@
-h
-c
-h
-c
-discard 9C
-play 7C
