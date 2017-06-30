@@ -162,25 +162,6 @@ Game::humanPlay(Player*player, const std::vector<Card*> &legalPlays)
 void
 Game::computerPlay(Player* p, const std::vector<Card*> & legalPlays)
 {
-    if (legalPlays.empty())
-    {
-      p->discard(p->hand()[0]);
-    }
-    else
-    {
-      std::cout << "computer" << std::endl;
-      bool first = false;
-      for (Card* c : p->hand())
-      {
-        if (c->rank().rank() == 6 && c->suit().suit() == 3)
-        {
-          p->play(c);
-          myTable[3].push_back(c);
-          first = true;
-        }
-      }
-      if (!first)
-      {
         p->play(legalPlays[0]);
         std::cout << "played " << *legalPlays[0] << std::endl;
         int suit = legalPlays[0]->suit().suit();
@@ -196,8 +177,6 @@ Game::computerPlay(Player* p, const std::vector<Card*> & legalPlays)
         {
           myTable[suit].push_back(legalPlays[0]);
         }
-      }
-    }
 }
 
 void

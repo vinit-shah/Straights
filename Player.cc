@@ -2,52 +2,10 @@
 
 #include "Player.h"
 
-Player::Player(char c) : myScore(0) {
-  if (c == 'h'){
-    playerType = Type::HUMAN;
-  }
-  else {
-    playerType = Type::COMPUTER;
-  }
-}
+Player::Player() : myScore(0) {}
 
 Player::~Player() {}
 
-Player::Type Player::type() const
-{
-  return playerType;
-}
-
-int Player::findCard(const std::vector<Card*> v, const Card* c)
-{
-  int ret = -1;
-    for(int i = 0; i < v.size(); ++i)
-    {
-        const Card* card = v[i];
-        if(*c == *card)
-            return i;
-    }
-    return ret;
-}
-
-void Player::play(const Card* card)
-{
-  auto it = findCard(myHand, card);
-  myHand.erase(myHand.begin() + it);
-}
-
-void Player::discard(const Card* card)
-{
-  auto it = findCard(myHand, card);
-  myDiscardedPile.push_back(myHand[it]);
-  myHand.erase(myHand.begin() + it);
-  incrementScore(card->rank().rank());
-}
-
-void Player::rageQuit()
-{
-  playerType = Type::COMPUTER;
-}
 
 void Player::deal(const std::vector<Card*> & cards)
 {
@@ -74,7 +32,58 @@ int Player::score() const
 }
 
 //Protected Member Functions
-void Player::incrementScore(int value)
+int
+Player::findCard(const std::vector<Card*>& v, const Card& c)
+{
+  int ret = -1;
+    for(int i = 0; i < v.size(); ++i)
+    {
+        if(*v[i] == card)
+            return i;
+    }
+    return ret;
+}
+
+void
+Player::incrementScore(int value)
 {
   myScore = myScore + value;
+}
+
+void
+Player::playCard(const Card& card)
+{
+  int index = findCard(myHand,card);
+  myHand.erase(myHand.begin() + index);
+}
+
+std::vector<Card*> constructLegalPlays(const std::vector< std::vector <Card*> >& gameTable)
+{
+  std::vector<Card*> plays;
+  for (Card* c : myHand)
+  {
+      if (*c == Card(Card::Rank(6), Card::Suit(0)) || *c == Card(Card::Rank(6), Card::Suit(1)) ||
+          *c == Card(Card::Rank(6), Card::Suit(2)) || *c == Card(Card::Rank(6), Card::Suit(3)))
+          plays.push_back(c);
+
+      for (const std::vector<Card*>& v : gameTable)
+      {
+          // std::cout << "card rank " << c->rank().rank() << std::endl;
+          if (!v.empty() && v[0]->suit().suit() == c->suit().suit())
+          {
+              Card *front = v[0];
+              // std::cout << "front " << front->rank().rank() << std::endl;
+              if (front->rank().rank() == c->rank().rank() + 1)
+                  plays.push_back(c);
+              else
+              {
+                  Card *back = v.back();
+                  // std::cout << "back " << back->rank().rank() << std::endl;
+                  if (back->rank().rank() == c->rank().rank() - 1)
+                      plays.push_back(c);
+              }
+          }
+      }
+  }
+  return plays;
 }
