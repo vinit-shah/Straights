@@ -6,6 +6,13 @@ Player::Player() : myScore(0) {}
 
 Player::~Player() {}
 
+Player& (Player && player)
+{
+    myHand = std::move(myHand,player.myHand);
+    myDiscardedPile = std::move(myDiscardedPile,player.myDiscardedPile);
+    myScore = std::move(myScore,player.myScore);
+    return *this;
+}
 
 void Player::deal(const std::vector<Card*> & cards)
 {
