@@ -20,8 +20,9 @@ Game::~Game()
     myPlayers.resize(0);
 }
 
-void Game::startGame()
+void Game::startGame(int seed)
 {
+  myDeck.setSeed(seed);
   for (int i = 0; i < 4; i++)
   {
     char x;
@@ -40,7 +41,6 @@ void Game::play()
 {
     while(!isGameOver())
     {
-        std::cout << "Starting round" << std::endl;
         startRound();
         while(!isRoundOver())
         {
@@ -55,7 +55,6 @@ void Game::play()
             }
         }
         endRound();
-        std::cout << "ending round" << std::endl;
     }
     printWinners();
 }
@@ -64,7 +63,6 @@ void
 Game::pollNextPlayer()
 {
     Player* p = myPlayers[myCurrentPlayer];
-    std::cout << "playing" << std::endl;
     Command c = p->play(myTable);
     if(c.type == Command::Type::PLAY)
     {
@@ -76,6 +74,7 @@ Game::pollNextPlayer()
             myTable[s].insert(myTable[s].begin(), card);
         else
             myTable[s].push_back(card);
+        std::cout << "Player " << myCurrentPlayer <<  " plays " << c.card << std::endl;
     }
     else if(c.type == Command::Type::DISCARD)
     {
@@ -95,7 +94,8 @@ Game::pollNextPlayer()
         newPlayer->clone(*p);
         delete p;
         myPlayers[myCurrentPlayer] = newPlayer;
-        newPlayer->play(myTable);
+        pollNextPlayer();
+        return;
     }
     myCurrentPlayer = (myCurrentPlayer+1)%4;
 }
@@ -166,10 +166,24 @@ Game::endRound()
 void
 Game::printWinners() const
 {
+    std::vector<int> minIndex;
+    int minScore = 100000000;
     for(int i = 0; i < myPlayers.size(); ++i)
     {
-        const Player* p = myPlayers[i];
-        std::cout << "Player's score is " << p->score() << std::endl;
+        if (myPlayers[i]->score() < minScore)
+        {
+            minIndex.clear();
+            minIndex.push_back(i);
+            minScore = myPlayers[i]->score();
+        }
+        else if (myPlayers[i]->score() == minScore)
+        {
+            minIndex.push_back(i);
+        }
+    }
+    for (int i : minIndex)
+    {
+        std::cout << "Player " << i << " wins" << std::endl;
     }
 }
 

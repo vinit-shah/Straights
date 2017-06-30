@@ -75,6 +75,14 @@ Player::constructLegalPlays(const std::vector< std::vector <Card*> >& gameTable)
   std::vector<Card*> plays;
   for (Card* c : myHand)
   {
+      if (*c == Card(Card::Rank(6), Card::Suit(3)))
+      {
+            plays.push_back(c);
+            return plays;
+      }
+  }
+  for (Card* c : myHand)
+  {
       if (*c == Card(Card::Rank(6), Card::Suit(0)) || *c == Card(Card::Rank(6), Card::Suit(1)) ||
           *c == Card(Card::Rank(6), Card::Suit(2)) || *c == Card(Card::Rank(6), Card::Suit(3)))
           plays.push_back(c);
@@ -98,8 +106,5 @@ Player::constructLegalPlays(const std::vector< std::vector <Card*> >& gameTable)
           }
       }
   }
-  std::cout << "LEGAL PLAYS " << std::endl;
-  for(Card* c : plays)
-      std::cout << *c << std::endl;
   return plays;
 }

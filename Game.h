@@ -14,7 +14,7 @@ public:
     Game(const Game&) = delete;
     Game& operator= (const Game&) = delete;
     void play();
-    void startGame();
+    void startGame(int seed);
 
 
 private:

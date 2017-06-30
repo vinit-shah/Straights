@@ -20,24 +20,26 @@ Human::play(const std::vector< std::vector <Card*> >& gameTable)
         std::cin >> c;
         if (c.type == Command::Type::PLAY)
         {
-        if(findCard(legalPlays, c.card))
-        {
-            legal = true;
-            playCard(c.card);
-        }
-        else
-            std::cout << "This is not a legal play." << std::endl;
+            if(findCard(legalPlays, c.card) != -1)
+            {
+                legal = true;
+                playCard(c.card);
+            }
+            else
+                std::cout << "This is not a legal play." << std::endl;
         }
         else if (c.type == Command::Type::DISCARD)
         {
-        if(legalPlays.empty())
-        {
+            if(legalPlays.empty())
+            {
+                legal = true;
+                discard(c.card);
+            }
+            else
+                std::cout << "You have a legal play. You may not discard." << std::endl;
+        }
+        if (c.type == Command::Type::QUIT || c.type == Command::Type::RAGEQUIT)
             legal = true;
-            discard(c.card);
-        }
-        else
-            std::cout << "You have a legal play. You may not discard." << std::endl;
-        }
     }
     return c;
 }
@@ -46,9 +48,10 @@ void
 Human::print(const std::vector< std::vector<Card*> >& gameTable) const
 {
   const std::string suits[4] = {"Clubs", "Diamonds", "Hearts", "Spades"};
+  std::cout << "Cards on the table" << std::endl;
   for(int i = 0; i < 4; ++i)
   {
-      std::cout << suits[i];
+      std::cout << suits[i] << ":";
       printCardList(gameTable[i]);
   }
   std::cout << "Your hand:";
