@@ -27,7 +27,6 @@ private:
     void humanPlay(Player *player, const std::vector<Card*> &legalPlays);
     void startRound();
     void endRound();
-    void constructLegalPlays(const std::vector<Card*> &hand, std::vector<Card*>& plays);
     void pollNextPlayer();
 
     bool isRoundOver() const;

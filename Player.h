@@ -12,7 +12,7 @@ class Player
     Player();
     virtual ~Player();
     Player(const Player&) = delete;
-
+    Player& operator=(const Player&) = delete;
     Player& clone(Player& player);
 
     void deal(const std::vector<Card*>&);
