@@ -48,18 +48,18 @@ void
 Human::print(const std::vector< std::vector<Card*> >& gameTable) const
 {
   const std::string suits[4] = {"Clubs", "Diamonds", "Hearts", "Spades"};
-  std::cout << "Cards on the table" << std::endl;
+  std::cout << "Cards on the table:" << std::endl;
   for(int i = 0; i < 4; ++i)
   {
       std::cout << suits[i] << ":";
-      printCardList(gameTable[i]);
+      printTableList(gameTable[i]);
   }
   std::cout << "Your hand:";
   printCardList(myHand);
-  std::cout << "Legal plays";
+  std::cout << "Legal plays:";
   std::vector<Card*> legalPlays = constructLegalPlays(gameTable);
   printCardList(legalPlays);
-  std::cout << ">\n";
+  std::cout << "> ";
 }
 
 void
@@ -67,7 +67,17 @@ Human::discard(const Card& card)
 {
   int index = findCard(myHand, card);
   myDiscardedPile.push_back(myHand[index]);
+  incrementScore(card.rank().rank()+1);
   myHand.erase(myHand.begin() + index);
+}
+
+void
+Human::printTableList(const std::vector<Card*>& list) const
+{
+    for (const Card *c: list)
+        std::cout <<" " << c->rank().rank()+1;
+    
+    std::cout << std::endl;
 }
 
 void

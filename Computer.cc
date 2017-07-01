@@ -33,7 +33,7 @@ void
 Computer::discard(const Card& card)
 {
   myDiscardedPile.push_back(myHand[0]);
-  incrementScore(myHand[0]->rank().rank());
+  incrementScore(myHand[0]->rank().rank()+1);
   myHand.erase(myHand.begin());
 }
 

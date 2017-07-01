@@ -26,7 +26,7 @@ void Game::startGame(int seed)
   for (int i = 0; i < 4; i++)
   {
     char x;
-    std::cout << "Is player " << i << " a human(h) or a computer(c)?\n";
+    std::cout << "Is player " << i+1 << " a human(h) or a computer(c)?\n>";
     std::cin >> x;
     Player* p;
     if(x == 'h')
@@ -44,7 +44,6 @@ void Game::play()
         startRound();
         while(!isRoundOver())
         {
-            // std::cout << "polling player " << std::endl;
             try
             {
                 pollNextPlayer();
@@ -74,11 +73,11 @@ Game::pollNextPlayer()
             myTable[s].insert(myTable[s].begin(), card);
         else
             myTable[s].push_back(card);
-        std::cout << "Player " << myCurrentPlayer <<  " plays " << c.card << std::endl;
+        std::cout << "Player " << myCurrentPlayer+1 <<  " plays " << c.card << "."<< std::endl;
     }
     else if(c.type == Command::Type::DISCARD)
     {
-        std::cout << "Player " << myCurrentPlayer << " discards " << c.card << std::endl;
+        std::cout << "Player " << myCurrentPlayer+1 << " discards " << c.card <<"." << std::endl;
     }
     else if(c.type ==  Command::Type::DECK)
     {
@@ -89,7 +88,7 @@ Game::pollNextPlayer()
         throw std::exception();
     else if(c.type == Command::Type::RAGEQUIT)
     {
-        std::cout << "Player " << myCurrentPlayer << " ragequits. A computer will now take over." << std::endl;
+        std::cout << "Player " << myCurrentPlayer+1 << " ragequits. A computer will now take over." << std::endl;
         Player *newPlayer = new Computer();
         newPlayer->clone(*p);
         delete p;
@@ -120,6 +119,7 @@ Game::startRound()
         }
         p->deal(cards);
     }
+    std::cout << "A new round begins. It's player " << myCurrentPlayer+1 << "'s turn to play." <<std::endl;
 }
 
 bool
@@ -150,16 +150,16 @@ Game::endRound()
     for(int i = 0; i < myPlayers.size(); i++)
     {
         const Player* p = myPlayers[i];
-        std::cout << "Player " << i << "'s discards:";
+        std::cout << "Player " << i+1 << "'s discards:";
         int old = p->score();
         const std::vector<Card*>&  discarded = p->discarded();
         for(const Card *c: discarded)
         {
-            old -= c->rank().rank();
+            old -= c->rank().rank()+1;
             std::cout << " " << *c;
         }
         std::cout << std::endl;
-        std::cout << "Player " << i << "'s score: " << old << " + " << (p->score() - old) << " = " << p->score() << std::endl;
+        std::cout << "Player " << i+1 << "'s score: " << old << " + " << (p->score() - old) << " = " << p->score() << std::endl;
     }
 }
 
@@ -183,7 +183,7 @@ Game::printWinners() const
     }
     for (int i : minIndex)
     {
-        std::cout << "Player " << i << " wins" << std::endl;
+        std::cout << "Player " << i+1 << " wins!" << std::endl;
     }
 }
 
