@@ -1,12 +1,16 @@
 #include <iostream>
 #include <vector>
+#include <stdlib.h>
 
 #include "Game.h"
 
-int main()
+int main(int argc, char* argv[])
 {
     Game game;
-    game.startGame();
+    if (argc == 2)
+        game.startGame(atoi(argv[1]));
+    else
+        game.startGame(0);
     try
     {
         game.play();

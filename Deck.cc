@@ -3,6 +3,7 @@
 
 Deck::Deck()
 {
+    mySeed = 0;
     myCards.reserve(52);
     for(int i = 0; i < Card::Suit::MAX_SUIT; ++i)
     {
@@ -34,9 +35,15 @@ Deck::find(const Card& card)
     return nullptr;
 }
 
+void 
+Deck::setSeed(int seed)
+{
+    mySeed = seed;
+}
+
 void
 Deck::shuffle() {
-  static std::mt19937 rng(0);
+  static std::mt19937 rng(mySeed);
 
 	int n = 52;
 
