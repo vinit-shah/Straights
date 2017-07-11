@@ -30,5 +30,6 @@ class Model : public Subject
         int getDiscards(int playerNum) const;
         bool isCardLegal(Card*) const;
         bool isGameOver() const;
+        bool isGameActive() const;
         bool isRoundOver() const;
 };

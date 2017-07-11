@@ -48,7 +48,7 @@ int Model::getScore(int playerNum) const
     return myGame->getScore(playerNum);
 }
 
-int Model::getDscards(int playerNum) const
+int Model::getDiscards(int playerNum) const
 {
     return myGame->getDiscards(playerNum);
 }
@@ -60,7 +60,12 @@ bool Model::isCardLegal(Card* card) const
 
 bool Model::isGameOver() const 
 {
-    return nullptr == myGame;
+    return myGame->isGameOver();
+}
+
+bool Model::isGameActive() const
+{
+    return nullptr== myGame;
 }
 
 bool Model::isRoundOver() const

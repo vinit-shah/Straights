@@ -19,7 +19,8 @@ public:
     void startRound();
     void rageQuit(int playerNum);
     void endRound();
-   
+    
+    bool isGameOver() const;
     bool isRoundOver() const;
     bool isCardLegal(Card*) const;
     
