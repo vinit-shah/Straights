@@ -56,20 +56,20 @@ View::View(Controller* controller, Model* model, Glib::RefPtr<Gtk::Builder>& bui
     // Player Boxes
     for(int i = 0; i < 4; ++i)
     {
+        PlayerBlock &playerB = myPlayerBlocks[i];
         std::stringstream ss;
         ss << "P" << (i+1) << "Button";
-        builder->get_widget(ss.str(), myPButtons[i]);
-        myPButtons[i]->set_label("Human");
-        myPButtons[i]->signal_clicked().connect(sigc::mem_fun(*this, &View::playerClicked));
-        Gtk::Label* label;
+        builder->get_widget(ss.str(), playerB.myButton);
+        playerB.myButton->set_label("Human");
+        playerB.myButton->signal_clicked().connect(sigc::mem_fun(myPlayerBlocks[i], &View::PlayerBlock::updateLabel));
         ss.str("");
         ss << "P" << (i+1) << "Label1";
-        builder->get_widget(ss.str(), label);
-        label->set_text("0 points");
+        builder->get_widget(ss.str(), playerB.myScoreLabel);
+        playerB.myScoreLabel->set_text("0 points");
         ss.str("");
         ss << "P" << (i+1) << "Label2";
-        builder->get_widget(ss.str(), label);
-        label->set_text("0 discards");
+        builder->get_widget(ss.str(), playerB.myDiscardLabel);
+        playerB.myDiscardLabel->set_text("0 discards");
     }
 }
 
@@ -78,8 +78,22 @@ View::~View()
     delete myCardGUI;
 };
 
+void
+View::PlayerBlock::updateLabel() const
+{
+    std::cout << "updating label" << std::endl;
+    if(myButton->get_label() == "Human")
+        myButton->set_label("Computer");
+    else
+        myButton->set_label("Human");
+}
+
 void View::update() {
-    //call specific update functions 
+    //call specific update functions
+    if(!myModel->isGameActive())
+    {
+
+    }
 }
 
 void View::updateRound() 
@@ -111,7 +125,11 @@ void View::startButtonClicked()
     ss >> s;
     bool playerTypes[4] = {false};
     for(int i = 0; i < 4; ++i)
-        playerTypes[i] = myPButtons[i]->get_label() == "Human";
+    {
+        PlayerBlock& pb = myPlayerBlocks[i];
+        playerTypes[i] = pb.myButton->get_label() == "Human";
+        pb.myButton->signal_clicked().connect(sigc::mem_fun(*this, &View::playerClicked));
+    }
     
     myController->startGame(s, playerTypes);
 }

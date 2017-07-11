@@ -20,10 +20,19 @@ class View : public Gtk::Window, public Observer {
         CardGUI* myCardGUI;
         Glib::RefPtr<Gtk::Builder> myBuilder;
         Gtk::Image* myTable[4][13] = {{nullptr}};
-        Gtk::Button* myPButtons[4] = {nullptr};
         Gtk::Entry* mySeedBox = nullptr;
-        bool myIsHumanPlayer[4] = {true};
         
+        struct PlayerBlock
+        {
+            Gtk::Button *myButton = nullptr;
+            Gtk::Label  *myScoreLabel = nullptr,
+                        *myDiscardLabel = nullptr;
+            void updateLabel() const;
+        };
+
+        PlayerBlock myPlayerBlocks[4];
+
+
         void updateRound();
         void updateMenu();
         void updatePlayer();

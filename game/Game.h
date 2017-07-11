@@ -17,7 +17,6 @@ public:
     void play();
     void startGame(int seed, bool playerTypes[]);
     void startRound();
-    void rageQuit(int playerNum);
     void endRound();
     
     bool isGameOver() const;

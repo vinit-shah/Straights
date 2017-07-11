@@ -9,6 +9,12 @@ void Model::startGame(int seed, bool playerTypes[])
     notify();
 }
 
+void Model::startRound()
+{
+    myGame->startRound();
+    notify();
+}
+
 void Model::endGame()
 {
     delete myGame;
@@ -19,12 +25,6 @@ void Model::endGame()
 void Model::endRound()
 {
     myGame->endRound();
-    notify();
-}
-
-void Model::rageQuit(int playerNum)
-{
-    myGame->rageQuit(playerNum);
     notify();
 }
 
@@ -55,7 +55,7 @@ int Model::getDiscards(int playerNum) const
 
 bool Model::isCardLegal(Card* card) const
 {
-    return myGame->isCardLegal(card);
+    return true; //myGame->isCardLegal(card);
 }
 
 bool Model::isGameOver() const 

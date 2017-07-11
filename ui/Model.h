@@ -18,8 +18,7 @@ class Model : public Subject
         void startGame(int seed, bool playerTypes[]);
         void endGame();
         void endRound();
-        void startRound(int seed);
-        void rageQuit(int playerNum);
+        void startRound();
         
         const std::vector<Card*> getPlayerHand(int num) const;
         const std::vector<Card*> getPlayerDiscarded(int num) const;

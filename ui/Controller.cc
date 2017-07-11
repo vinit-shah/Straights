@@ -18,13 +18,7 @@ void Controller::endRound()
     myModel->endGame();
 }
 
-void Controller::startRound(int seed)
+void Controller::startRound()
 {
-    myModel->startRound(seed);
+    myModel->startRound();
 }
-
-void Controller::rageQuit(int playerNum)
-{
-    myModel->rageQuit(playerNum);
-}
-

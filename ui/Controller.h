@@ -15,6 +15,5 @@ class Controller
         void endGame();
         void startGame(int seed, bool playerTypes[]);
         void endRound();
-        void startRound(int seed);
-        void rageQuit(int);
+        void startRound();
 };

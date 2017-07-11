@@ -4,7 +4,7 @@
 #include <glibmm/refptr.h>
 #include <vector>
 
-#include "../Card.h"
+#include "../game/Card.h"
 
 class CardGUI 
 {

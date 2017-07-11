@@ -37,6 +37,7 @@ void Game::play()
 {
     while(!isGameOver())
     {
+        // CHANGE MEEEEEEEE!!!!!!!!!!!!!
         startRound();
         while(!isRoundOver())
         {
@@ -164,12 +165,12 @@ Game::endRound()
 
 const std::vector<Card*> Game::getPlayerHand (int num) const
 {
-    return myPlayers[num].hand();
+    return myPlayers[num]->hand();
 }
 
 const std::vector<Card*> Game::getPlayerDiscarded(int num) const
 {
-    return myPlayers[num].discarded();
+    return myPlayers[num]->discarded();
 }
 
 const std::vector<Card*> Game::getCardsPlayed(Card::Suit suit) const
@@ -179,12 +180,12 @@ const std::vector<Card*> Game::getCardsPlayed(Card::Suit suit) const
 
 int Game::getScore (int playerNum) const 
 {
-    return myPlayers[playerNum].score();
+    return myPlayers[playerNum]->score();
 }
 
 int Game::getDiscards(int playerNum) const
 {
-    return myPlayers[playerNum].discarded().size();
+    return myPlayers[playerNum]->discarded().size();
 }
 
 void
