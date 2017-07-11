@@ -21,7 +21,6 @@ Game::~Game()
 
 void Game::startGame(int seed, bool playerTypes[])
 {
-<<<<<<< Updated upstream
   myDeck.setSeed(seed);
   for (int i = 0; i < 4; i++)
   {
@@ -32,21 +31,6 @@ void Game::startGame(int seed, bool playerTypes[])
         p = new Computer();
     myPlayers.push_back(p);
   }
-=======
-    myDeck.setSeed(seed);
-    for (int i = 0; i < 4; i++)
-    {
-        char x;
-        std::cout << "Is player " << i+1 << " a human(h) or a computer(c)?\n>";
-        std::cin >> x;
-        Player* p;
-        if(x == 'h')
-            p = new Human();
-        else
-            p = new Computer();
-        myPlayers.push_back(p);
-    }
->>>>>>> Stashed changes
 }
 
 void Game::play()
@@ -176,6 +160,31 @@ Game::endRound()
         std::cout << std::endl;
         std::cout << "Player " << i+1 << "'s score: " << old << " + " << (p->score() - old) << " = " << p->score() << std::endl;
     }
+}
+
+const std::vector<Card*> Game::getPlayerHand (int num) const
+{
+    return myPlayers[num].hand();
+}
+
+const std::vector<Card*> Game::getPlayerDiscarded(int num) const
+{
+    return myPlayers[num].discarded();
+}
+
+const std::vector<Card*> Game::getCardsPlayed(Card::Suit suit) const
+{
+    return myTable[suit.suit()];
+}
+
+int Game::getScore (int playerNum) const 
+{
+    return myPlayers[playerNum].score();
+}
+
+int Game::getDiscards(int playerNum) const
+{
+    return myPlayers[playerNum].discarded().size();
 }
 
 void

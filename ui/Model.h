@@ -26,7 +26,8 @@ class Model : public Subject
         const std::vector<Card*> getCardsPlayed(Card::Suit) const;
         
         
-
+        int getScore(int playerNum) const;
+        int getDiscards(int playerNum) const;
         bool isCardLegal(Card*) const;
         bool isGameOver() const;
         bool isRoundOver() const;

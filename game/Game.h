@@ -13,17 +13,23 @@ public:
     ~Game();
     Game(const Game&) = delete;
     Game& operator= (const Game&) = delete;
+    
     void play();
     void startGame(int seed, bool playerTypes[]);
     void startRound();
     void rageQuit(int playerNum);
     void endRound();
+   
     bool isRoundOver() const;
     bool isCardLegal(Card*) const;
-    const std::vector<Card*> getPlayerhand(int num) const;
+    
+    const std::vector<Card*> getPlayerHand(int num) const;
     const std::vector<Card*> getPlayerDiscarded(int num) const;
     const std::vector<Card*> getCardsPlayed(Card::Suit) const;
+    
     int currentPlayer() const;
+    int getScore(int playerNum) const;
+    int getDiscards(int playerNum) const;
 
 private:
     std::vector<Player*> myPlayers;

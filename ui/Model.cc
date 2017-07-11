@@ -43,6 +43,16 @@ const std::vector<Card*> Model::getCardsPlayed(Card::Suit suit) const
     return myGame->getCardsPlayed(suit);
 }
 
+int Model::getScore(int playerNum) const
+{
+    return myGame->getScore(playerNum);
+}
+
+int Model::getDscards(int playerNum) const
+{
+    return myGame->getDiscards(playerNum);
+}
+
 bool Model::isCardLegal(Card* card) const
 {
     return myGame->isCardLegal(card);
