@@ -14,39 +14,27 @@ Game::Game()
 Game::~Game()
 {
     for (Player * p : myPlayers)
-        delete p;
-
+    {
+      delete p;
+    }
     myPlayers.resize(0);
 }
 
-void Game::startGame(int seed, bool playerTypes[])
+void Game::startGame(int seed)
 {
-<<<<<<< Updated upstream
   myDeck.setSeed(seed);
   for (int i = 0; i < 4; i++)
   {
+    char x;
+    std::cout << "Is player " << i+1 << " a human(h) or a computer(c)?\n>";
+    std::cin >> x;
     Player* p;
-    if(playerTypes[i])
+    if(x == 'h')
         p = new Human();
     else
         p = new Computer();
     myPlayers.push_back(p);
   }
-=======
-    myDeck.setSeed(seed);
-    for (int i = 0; i < 4; i++)
-    {
-        char x;
-        std::cout << "Is player " << i+1 << " a human(h) or a computer(c)?\n>";
-        std::cin >> x;
-        Player* p;
-        if(x == 'h')
-            p = new Human();
-        else
-            p = new Computer();
-        myPlayers.push_back(p);
-    }
->>>>>>> Stashed changes
 }
 
 void Game::play()
@@ -70,11 +58,6 @@ void Game::play()
     printWinners();
 }
 
-int Game::currentPlayer() const 
-{
-    return myCurrentPlayer;
-}
-
 void
 Game::pollNextPlayer()
 {
@@ -93,7 +76,9 @@ Game::pollNextPlayer()
         std::cout << "Player " << myCurrentPlayer+1 <<  " plays " << c.card << "."<< std::endl;
     }
     else if(c.type == Command::Type::DISCARD)
+    {
         std::cout << "Player " << myCurrentPlayer+1 << " discards " << c.card <<"." << std::endl;
+    }
     else if(c.type ==  Command::Type::DECK)
     {
         for(int i = 0; i < 4; i++)

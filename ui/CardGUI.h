@@ -1,7 +1,10 @@
 #pragma once
 
 #include <gdkmm/pixbuf.h>
+#include <glibmm/refptr.h>
 #include <vector>
+
+#include "../Card.h"
 
 class CardGUI 
 {
@@ -9,10 +12,10 @@ class CardGUI
         CardGUI();
         virtual ~CardGUI();
         
-        GLib::RefPtr<Gdk::Pixbuf> image(Rank r, Suit s);
-        GLib::RefPtr<Gdk::Pixbuf> nullImage();
+        Glib::RefPtr<Gdk::Pixbuf> image(Card::Rank r, Card::Suit s);
+        Glib::RefPtr<Gdk::Pixbuf> nothingImage();
 
     private:
-        std::vector < GLib::RefPtr <Gdk::Pixbuf> > deck;
+        std::vector <Glib::RefPtr<Gdk::Pixbuf>> myDeck;
 };
 

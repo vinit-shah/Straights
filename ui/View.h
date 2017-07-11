@@ -7,18 +7,22 @@
 
 class Model;
 class Controller;
-class CardGUI
-class View : public Gtk::Window; public Observer {
+class CardGUI;
+class View : public Gtk::Window, public Observer {
     public:
-        View (Controller *, Model*);
+        View (Controller *, Model*, Glib::RefPtr<Gtk::Builder>& builder);
         virtual ~View();
         virtual void update() override;
     
     private:
-        Model* model;
-        Controller* controller;
-        CardGUI cardGUI;
-        Glib::RefPtr<Gtk::Builder> builder;
+        Model* myModel;
+        Controller* myController;
+        CardGUI* myCardGUI;
+        Glib::RefPtr<Gtk::Builder> myBuilder;
+        Gtk::Image* myTable[4][13] = {{nullptr}};
+        Gtk::Button* myPButtons[4] = {nullptr};
+        Gtk::Entry* mySeedBox = nullptr;
+        bool myIsHumanPlayer[4] = {true};
         
         void updateRound();
         void updateMenu();

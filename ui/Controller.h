@@ -18,4 +18,3 @@ class Controller
         void startRound(int seed);
         void rageQuit(int);
 };
-
