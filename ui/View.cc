@@ -48,7 +48,7 @@ View::View(Controller* controller, Model* model, Glib::RefPtr<Gtk::Builder>& bui
         ss.str("");
         ss << "HandCard" << i + 1;
         builder->get_widget(ss.str(), btn.myButton);
-        btn.myButton->signal_clicked().connect(sigc::mem_fun(*this, &View::CardButton::clickListener));
+        btn.myButton->signal_clicked().connect(sigc::mem_fun(btn, &View::CardButton::clickListener));
     }
 
     // Player Boxes
@@ -68,6 +68,7 @@ View::View(Controller* controller, Model* model, Glib::RefPtr<Gtk::Builder>& bui
         builder->get_widget(ss.str(), playerB.myDiscardLabel);
     }
     reset();
+    myModel->subscribe(this);
 }
 
 View::~View()
@@ -195,6 +196,7 @@ void View::startButtonClicked()
     {
         PlayerBlock& pb = myPlayerBlocks[i];
         playerTypes[i] = pb.myButton->get_label() == "Human";
+        pb.myButton->set_label("Rage!");
         pb.myButton->signal_clicked().connect(sigc::mem_fun(*this, &View::playerClicked));
     }
     myController->startGame(s, playerTypes);
@@ -209,7 +211,7 @@ void View::endGameButtonClicked()
 void View::cardClicked(int index)
 {
     //call controller to play or discard card
-    myController->play(index);
+    myController->playCard(index);
 }
 
 void View::showEndRound() 
@@ -220,6 +222,11 @@ void View::showEndRound()
 void View::showEndGame()
 {
     //call controller to end game
+}
+
+void View::playerClicked()
+{
+
 }
 
 

@@ -19,15 +19,19 @@ class Model : public Subject
         void endGame();
         void endRound();
         void startRound();
-        
-        const std::vector<Card*> getPlayerHand(int num) const;
+        void playCard(int cardNum);
+
+        std::string roundResults() const;
+        std::string gameResults() const;
+
+        const std::vector<Card*> getPlayerHand() const;
         const std::vector<Card*> getPlayerDiscarded(int num) const;
-        const std::vector<Card*> getCardsPlayed(Card::Suit) const;
+        const std::vector <  std::vector<Card*> > getCardsPlayed() const;
         
-        
+        int getActivePlayer() const;
         int getScore(int playerNum) const;
         int getDiscards(int playerNum) const;
-        bool isCardLegal(Card*) const;
+        
         bool isGameOver() const;
         bool isGameActive() const;
         bool isRoundOver() const;
