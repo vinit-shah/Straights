@@ -4,7 +4,7 @@
 
 class Model;
 
-class Controller 
+class Controller
 {
     private:
         Model* myModel;
@@ -13,9 +13,9 @@ class Controller
         Controller(Model*);
 
         void endGame();
-        void startGame();
+        void startGame(int seed, bool playerTypes[]);
         void endRound();
-        void startRound();
+        void startRound(int seed);
         void rageQuit(int);
-}
+};
 

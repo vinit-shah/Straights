@@ -14,8 +14,16 @@ public:
     Game(const Game&) = delete;
     Game& operator= (const Game&) = delete;
     void play();
-    void startGame(int seed);
-
+    void startGame(int seed, bool playerTypes[]);
+    void startRound();
+    void rageQuit(int playerNum);
+    void endRound();
+    bool isRoundOver() const;
+    bool isCardLegal(Card*) const;
+    const std::vector<Card*> getPlayerhand(int num) const;
+    const std::vector<Card*> getPlayerDiscarded(int num) const;
+    const std::vector<Card*> getCardsPlayed(Card::Suit) const;
+    int currentPlayer() const;
 
 private:
     std::vector<Player*> myPlayers;
@@ -25,12 +33,8 @@ private:
 
     void computerPlay(Player *player, const std::vector<Card*> &legalPlays);
     void humanPlay(Player *player, const std::vector<Card*> &legalPlays);
-    void startRound();
-    void endRound();
     void pollNextPlayer();
 
-    bool isRoundOver() const;
-    bool isGameOver() const;
 
     void printWinners() const;
     void printCardList(const std::vector<Card*>& ) const;

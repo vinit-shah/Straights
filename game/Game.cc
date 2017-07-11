@@ -20,16 +20,13 @@ Game::~Game()
     myPlayers.resize(0);
 }
 
-void Game::startGame(int seed)
+void Game::startGame(int seed, bool playerTypes[])
 {
   myDeck.setSeed(seed);
   for (int i = 0; i < 4; i++)
   {
-    char x;
-    std::cout << "Is player " << i+1 << " a human(h) or a computer(c)?\n>";
-    std::cin >> x;
     Player* p;
-    if(x == 'h')
+    if(playerTypes[i])
         p = new Human();
     else
         p = new Computer();
@@ -56,6 +53,11 @@ void Game::play()
         endRound();
     }
     printWinners();
+}
+
+int Game::currentPlayer() const 
+{
+    return myCurrentPlayer;
 }
 
 void
