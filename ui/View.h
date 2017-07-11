@@ -30,8 +30,19 @@ class View : public Gtk::Window, public Observer {
             void updateLabel() const;
         };
 
-        PlayerBlock myPlayerBlocks[4];
+        struct CardButton
+        {
+            View *myView = nullptr;
+            Gtk::Button *myButton = nullptr;
+            Gtk::Image *myImage = nullptr;
+            int myIndex = -1;
+            void clickListener() const;
+        };
 
+        PlayerBlock myPlayerBlocks[4];
+        CardButton myCardButtons[13];
+
+        void reset();
 
         void updateRound();
         void updateMenu();
@@ -43,7 +54,7 @@ class View : public Gtk::Window, public Observer {
         void endGameButtonClicked();
         void rageQuitClicked();
         void playerClicked();
-        void cardClicked();
+        void cardClicked(int index);
 
         void showEndRound();
         void showEndGame();

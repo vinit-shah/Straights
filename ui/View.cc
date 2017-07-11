@@ -32,9 +32,7 @@ View::View(Controller* controller, Model* model, Glib::RefPtr<Gtk::Builder>& bui
                 ss << royalty[j-10];
             else
                 ss << j;
-            Glib::RefPtr<Gdk::Pixbuf> pb  = myCardGUI->nothingImage();
             builder->get_widget(ss.str(), myTable[i][j]);
-            myTable[i][j]->set(pb);
         }
     }
 
@@ -43,14 +41,14 @@ View::View(Controller* controller, Model* model, Glib::RefPtr<Gtk::Builder>& bui
     {
         std::stringstream ss;
         ss << "HC" << i + 1 << "Img";
-        Gtk::Image* img;
-        Gtk::Button* btn;
-        builder->get_widget(ss.str(), img);
+        CardButton &btn = myCardButtons[i];
+        btn.myIndex = i;
+        btn.myView = this;
+        builder->get_widget(ss.str(), btn.myImage);
         ss.str("");
         ss << "HandCard" << i + 1;
-        builder->get_widget(ss.str(), btn);
-        img->set(myCardGUI->nothingImage());
-        btn->signal_clicked().connect(sigc::mem_fun(*this, &View::cardClicked));
+        builder->get_widget(ss.str(), btn.myButton);
+        btn.myButton->signal_clicked().connect(sigc::mem_fun(*this, &View::CardButton::clickListener));
     }
 
     // Player Boxes
@@ -65,27 +63,62 @@ View::View(Controller* controller, Model* model, Glib::RefPtr<Gtk::Builder>& bui
         ss.str("");
         ss << "P" << (i+1) << "Label1";
         builder->get_widget(ss.str(), playerB.myScoreLabel);
-        playerB.myScoreLabel->set_text("0 points");
         ss.str("");
         ss << "P" << (i+1) << "Label2";
         builder->get_widget(ss.str(), playerB.myDiscardLabel);
-        playerB.myDiscardLabel->set_text("0 discards");
     }
+    reset();
 }
 
 View::~View()
 {
     delete myCardGUI;
-};
+}
+
+void
+View::reset()
+{
+    char royalty[3] = { 'j', 'q', 'k'};
+    
+    // Table
+    for(int i = 0; i < 4; ++i)
+    {
+        for(int j = 0; j  < 13; ++j)
+        {
+            Glib::RefPtr<Gdk::Pixbuf> pb  = myCardGUI->nothingImage();
+            myTable[i][j]->set(pb);
+        }
+    }
+
+    // Hand Display
+    for(int i = 0; i < 13; ++i)
+    {
+        CardButton &btn = myCardButtons[i];
+        btn.myImage->set(myCardGUI->nothingImage());
+    }
+
+    // Player Boxes
+    for(int i = 0; i < 4; ++i)
+    {
+        PlayerBlock &playerB = myPlayerBlocks[i];
+        playerB.myScoreLabel->set_text("0 points");
+        playerB.myDiscardLabel->set_text("0 discards");
+    }
+}
 
 void
 View::PlayerBlock::updateLabel() const
 {
-    std::cout << "updating label" << std::endl;
     if(myButton->get_label() == "Human")
         myButton->set_label("Computer");
     else
         myButton->set_label("Human");
+}
+
+void
+View::CardButton::clickListener() const
+{
+    myView->cardClicked(myIndex);
 }
 
 void View::update() {
@@ -104,16 +137,49 @@ void View::updateRound()
 void View::updateMenu() 
 {
     //What buttons are clickable
+    int currentPlayer = myModel->getActivePlayer();
+    for(int i = 0; i < 4; i++)
+        myPlayerBlocks[i].myButton->set_sensitive(i == currentPlayer);
+    int lastPlayer = (currentPlayer - 1) % 4,
+        lastScore = myModel->getScore(lastPlayer),
+        lastDiscards = myModel->getDiscards(lastPlayer);
+    std::stringstream ss;
+    ss << lastScore << " points";
+    myPlayerBlocks[lastPlayer].myScoreLabel->set_text(ss.str());
+    ss.str("");
+    ss << lastDiscards << " discards";
+    myPlayerBlocks[lastPlayer].myDiscardLabel->set_text(ss.str());
 }
 
 void View::updatePlayed()
 {
     //get cards that have been played from the model, put them on screen
+    const std::vector<std::vector<Card*>> table = myModel->getCardsPlayed();
+    for(int i = 0; i < 4; ++i)
+    {
+        for(int j = 0; j < 13; ++j)
+        {
+            if(table[i][j])
+                myTable[i][j]->set(myCardGUI->image(table[i][j]->rank().rank(), table[i][j]->suit().suit()));
+        }
+    }
 }
 
 void View::updateHand() 
 {
     //get currentPlayer, show his cards
+    const std::vector<Card*> &hand = myModel->getPlayerHand();
+    for(int i = 0; i < 13; ++i)
+    {
+        CardButton &btn = myCardButtons[i]; 
+        if(i < hand.size())
+            btn.myImage->set(myCardGUI->image(hand[i]->rank().rank(), hand[i]->suit().suit()));
+        else
+        {
+            btn.myImage->set(myCardGUI->nothingImage());
+            btn.myButton->set_sensitive(false);
+        }
+    }
 }
 
 void View::startButtonClicked()
@@ -121,6 +187,7 @@ void View::startButtonClicked()
     //call to controller's startButtonClicked function
     std::string seed = mySeedBox->get_text();
     std::stringstream ss(seed);
+    reset();
     int s;
     ss >> s;
     bool playerTypes[4] = {false};
@@ -130,23 +197,19 @@ void View::startButtonClicked()
         playerTypes[i] = pb.myButton->get_label() == "Human";
         pb.myButton->signal_clicked().connect(sigc::mem_fun(*this, &View::playerClicked));
     }
-    
     myController->startGame(s, playerTypes);
 }
 
 void View::endGameButtonClicked()
 {
     //call controller to end game
+    myController->endGame();
 }
 
-void View::playerClicked()
-{
-    //make player human or computer
-}
-
-void View::cardClicked()
+void View::cardClicked(int index)
 {
     //call controller to play or discard card
+    myController->play(index);
 }
 
 void View::showEndRound() 
