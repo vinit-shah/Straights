@@ -29,12 +29,8 @@ void Controller::startRound()
     myModel->startRound();
 }
 
-std::string Controller::roundResults() const
+void Controller::rageQuit()
 {
-    return myModel->roundResults();
+    myModel->rageQuit();
 }
 
-std::string Controller::gameResults() const
-{
-    return myModel->gameResults();
-}

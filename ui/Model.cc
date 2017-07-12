@@ -36,6 +36,12 @@ void Model::endRound()
 void Model::playCard(int cardNum)
 {
     myGame->playCard(cardNum);
+    notify();
+}
+
+void Model::rageQuit()
+{
+    myGame->rageQuit();
 }
 
 std::string Model::roundResults() const

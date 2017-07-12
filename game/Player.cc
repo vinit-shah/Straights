@@ -65,6 +65,7 @@ Player::incrementScore(int value)
 void
 Player::playCard(const Card& card)
 {
+  std::cout << "removing " << std::endl;
   int index = findCard(myHand,card);
   myHand.erase(myHand.begin() + index);
 }

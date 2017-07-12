@@ -17,7 +17,5 @@ class Controller
         void startGame(int seed, bool playerTypes[]);
         void endRound();
         void startRound();
-
-        std::string roundResults() const;
-        std::string gameResults() const;
+        void rageQuit();
 };

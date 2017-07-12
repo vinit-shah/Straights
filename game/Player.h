@@ -19,8 +19,10 @@ class Player
     const std::vector <Card*>& hand() const;
     const std::vector<Card*>& discarded() const;
     int score() const;
+    virtual bool isHuman() const = 0;
 
-    virtual const Command play(const std::vector< std::vector <Card*> >& gameTable) = 0;
+    virtual void rageQuit() = 0;
+    virtual const Command play(const std::vector< std::vector <Card*> >& gameTable, int cardNum) = 0;
 
   protected:
     int                  myScore;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 #include "Command.h"
 #include "Deck.h"
@@ -18,18 +19,22 @@ public:
     void startGame(int seed, bool playerTypes[]);
     void startRound();
     void endRound();
-    
+    void playCard(int cardNum);
+    void rageQuit();
+
     bool isGameOver() const;
     bool isRoundOver() const;
-    bool isCardLegal(Card*) const;
     
-    const std::vector<Card*> getPlayerHand(int num) const;
+    const std::vector<Card*> getPlayerHand() const;
     const std::vector<Card*> getPlayerDiscarded(int num) const;
-    const std::vector<Card*> getCardsPlayed(Card::Suit) const;
+    const std::vector <std::vector<Card*> > getCardsPlayed() const;
     
     int currentPlayer() const;
-    int getScore(int playerNum) const;
-    int getDiscards(int playerNum) const;
+    int getScore(int num) const;
+    int getDiscards(int num) const;
+
+    std::string roundResults() const;
+    std::string gameResults() const;
 
 private:
     std::vector<Player*> myPlayers;
@@ -37,8 +42,6 @@ private:
     unsigned int        myCurrentPlayer;
     Deck                myDeck;
 
-    void computerPlay(Player *player, const std::vector<Card*> &legalPlays);
-    void humanPlay(Player *player, const std::vector<Card*> &legalPlays);
     void pollNextPlayer();
 
 

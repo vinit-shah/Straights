@@ -20,6 +20,7 @@ class Model : public Subject
         void endRound();
         void startRound();
         void playCard(int cardNum);
+        void rageQuit();
 
         std::string roundResults() const;
         std::string gameResults() const;

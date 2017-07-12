@@ -96,6 +96,7 @@ View::reset()
     {
         CardButton &btn = myCardButtons[i];
         btn.myImage->set(myCardGUI->nothingImage());
+        btn.myButton->set_sensitive(true);
     }
 
     // Player Boxes
@@ -125,9 +126,11 @@ View::CardButton::clickListener() const
 void View::update() {
     //call specific update functions
     if(myModel->isRoundOver())
+    {
         updateRound();
-    else if(myModel->isGameOver())
-        updateGame();
+        if(myModel->isGameOver())
+            updateGame();
+    }
     else
     {
         updateHand();
@@ -171,13 +174,17 @@ void View::updateMenu()
 
 void View::updatePlayed()
 {
+    std::cout << "Updating played" << std::endl;
     //get cards that have been played from the model, put them on screen
     const std::vector<std::vector<Card*>> table = myModel->getCardsPlayed();
     for(int i = 0; i < 4; ++i)
     {
+        std::cout << table.size() << std::endl;
         for(int j = 0; j < 13; ++j)
         {
-            if(table[i][j])
+            if(i < table.size())
+                std::cout << table[i].size() << std::endl;
+            if(i < table.size() && j < table[i].size())
                 myTable[i][j]->set(myCardGUI->image(table[i][j]->rank().rank(), table[i][j]->suit().suit()));
         }
     }
@@ -203,8 +210,9 @@ void View::updateHand()
 void View::basicDialog(const std::string &str)
 {
     Gtk::Dialog dial("New Round", *this);
-    Gtk::VBox* vbox = dial.get_vbox();
-    vbox->pack_start(Gtk::Label(str, true, false));
+    Gtk::Box* vbox = dial.get_vbox();
+    Gtk::Label lab(str);
+    vbox->pack_start(lab, true, false);
     dial.add_button(Gtk::Stock::OK, Gtk::RESPONSE_OK);
     dial.run();
 }
@@ -214,9 +222,6 @@ void View::startButtonClicked()
     //call to controller's startButtonClicked function
     std::string seed = mySeedBox->get_text();
     std::stringstream ss(seed);
-    std::stringstream dialogBoxStr;
-    ss << "A new round begins. It's player" << myModel->getActivePlayer() << "'s turn to play.";
-    newRoundDialog(dialogBoxStr);
     reset();
     int s;
     ss >> s;
@@ -229,6 +234,9 @@ void View::startButtonClicked()
         pb.myButton->signal_clicked().connect(sigc::mem_fun(*this, &View::playerClicked));
     }
     myController->startGame(s, playerTypes);
+    std::stringstream dialogBoxStr;
+    ss << "A new round begins. It's player" << myModel->getActivePlayer() << "'s turn to play.";
+    basicDialog(dialogBoxStr.str());
 }
 
 void View::endGameButtonClicked()
@@ -257,5 +265,5 @@ void View::showEndGame()
 
 void View::playerClicked()
 {
-    myController->ragequit();
+    myController->rageQuit();
 }

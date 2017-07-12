@@ -4,44 +4,48 @@
 
 #include "Human.h"
 
-Human::Human() : Player() {}
+Human::Human() : Player(), human(true) {}
 
 Human::~Human() {}
 
 const Command
-Human::play(const std::vector< std::vector <Card*> >& gameTable)
+Human::play(const std::vector< std::vector <Card*> >& gameTable, int cardNum)
 {
     print(gameTable);
     std::vector <Card*> legalPlays = constructLegalPlays(gameTable);
-    bool legal = false;
     Command c;
-    while(!legal)
+    Card *card = myHand[cardNum];
+    std::cout << "player chose card " << *card << std::endl;
+    if (findCard(legalPlays,*card) != -1)
     {
-        std::cin >> c;
-        if (c.type == Command::Type::PLAY)
-        {
-            if(findCard(legalPlays, c.card) != -1)
-            {
-                legal = true;
-                playCard(c.card);
-            }
-            else
-                std::cout << "This is not a legal play." << std::endl;
-        }
-        else if (c.type == Command::Type::DISCARD)
-        {
-            if(legalPlays.empty())
-            {
-                legal = true;
-                discard(c.card);
-            }
-            else
-                std::cout << "You have a legal play. You may not discard." << std::endl;
-        }
-        if (c.type == Command::Type::QUIT || c.type == Command::Type::RAGEQUIT)
-            legal = true;
+        playCard(*card);
+        std::cout << "command is of type play" << std::endl;
+        c.type = Command::Type::PLAY;
+        c.card = *card;
+        return c;
     }
+    else if (legalPlays.empty())
+    {
+        discard(*card);
+        c.type = Command::Type::DISCARD;
+        c.card = *card;
+        return c;
+    }
+    c.type= Command::Type::BAD_COMMAND;
+    std::cout << "retung bad command" << std::endl;
     return c;
+}
+
+bool 
+Human::isHuman() const
+{
+    return human;
+}
+
+void
+Human::rageQuit() 
+{
+    human = false;
 }
 
 void
@@ -75,8 +79,10 @@ void
 Human::printTableList(const std::vector<Card*>& list) const
 {
     for (const Card *c: list)
-        std::cout <<" " << c->rank().rank()+1;
-    
+    {
+        if(c!=nullptr)
+            std::cout <<" " << c->rank().rank()+1;
+    }
     std::cout << std::endl;
 }
 

@@ -8,8 +8,14 @@ Computer::Computer() : Player() {}
 
 Computer::~Computer() {}
 
+bool
+Computer::isHuman() const
+{
+    return false;
+}
+
 const Command
-Computer::play(const std::vector< std::vector <Card*> >& gameTable)
+Computer::play(const std::vector< std::vector <Card*> >& gameTable, int cardNum)
 {
   std::vector<Card*> legalPlays = constructLegalPlays(gameTable);
   Command command;
@@ -27,6 +33,11 @@ Computer::play(const std::vector< std::vector <Card*> >& gameTable)
     command.card = *legalPlays[0];
   }
   return command;
+}
+
+void 
+Computer::rageQuit() {
+    return;
 }
 
 void
