@@ -27,7 +27,9 @@ class View : public Gtk::Window, public Observer {
             Gtk::Button *myButton = nullptr;
             Gtk::Label  *myScoreLabel = nullptr,
                         *myDiscardLabel = nullptr;
-            void updateLabel() const;
+            bool myIsGame = false;
+            View *myView = nullptr;
+            void clickListener() const;
         };
 
         struct CardButton

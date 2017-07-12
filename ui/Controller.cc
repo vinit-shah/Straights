@@ -16,7 +16,6 @@ void Controller::endGame()
 void Controller::startGame(int seed, bool playerTypes[])
 {
     myModel->startGame(seed,playerTypes);
-    startRound();
 }
 
 void Controller::endRound() 

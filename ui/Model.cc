@@ -11,6 +11,7 @@ void Model::startGame(int seed, bool playerTypes[])
     }
     myGame = new Game();
     myGame->startGame(seed,playerTypes);
+    myGame->startRound();
     notify();
 }
 

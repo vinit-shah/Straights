@@ -59,7 +59,7 @@ View::View(Controller* controller, Model* model, Glib::RefPtr<Gtk::Builder>& bui
         ss << "P" << (i+1) << "Button";
         builder->get_widget(ss.str(), playerB.myButton);
         playerB.myButton->set_label("Human");
-        playerB.myButton->signal_clicked().connect(sigc::mem_fun(myPlayerBlocks[i], &View::PlayerBlock::updateLabel));
+        playerB.myButton->signal_clicked().connect(sigc::mem_fun(myPlayerBlocks[i], &View::PlayerBlock::clickListener));
         ss.str("");
         ss << "P" << (i+1) << "Label1";
         builder->get_widget(ss.str(), playerB.myScoreLabel);
@@ -105,16 +105,23 @@ View::reset()
         PlayerBlock &playerB = myPlayerBlocks[i];
         playerB.myScoreLabel->set_text("0 points");
         playerB.myDiscardLabel->set_text("0 discards");
+        std::cout << "not in game" << std::endl;
+        playerB.myIsGame = false;
     }
 }
 
 void
-View::PlayerBlock::updateLabel() const
+View::PlayerBlock::clickListener() const
 {
-    if(myButton->get_label() == "Human")
-        myButton->set_label("Computer");
+    if(!myIsGame)
+    {
+        if(myButton->get_label() == "Human")
+            myButton->set_label("Computer");
+        else
+            myButton->set_label("Human");
+    }
     else
-        myButton->set_label("Human");
+        myView->playerClicked();
 }
 
 void
@@ -128,6 +135,8 @@ void View::update() {
     if(myModel->isGameOver())
     {
         updateGame();
+        std::cout << "game is over" << std::endl;
+        reset();
     }
     else if(myModel->isRoundOver())
     {
@@ -152,6 +161,7 @@ void View::updateRound()
 {
     //When round is finished, show scores in a dialog etc..
     showEndRound();
+    std::cout << "updating round" << std::endl;
     reset();
     myController->startRound();
 }
@@ -233,7 +243,8 @@ void View::startButtonClicked()
         PlayerBlock& pb = myPlayerBlocks[i];
         playerTypes[i] = pb.myButton->get_label() == "Human";
         pb.myButton->set_label("Rage!");
-        pb.myButton->signal_clicked().connect(sigc::mem_fun(*this, &View::playerClicked));
+        pb.myIsGame = true;
+        pb.myView = this;
     }
     myController->startGame(s, playerTypes);
     std::stringstream dialogBoxStr;
@@ -268,5 +279,6 @@ void View::showEndGame()
 
 void View::playerClicked()
 {
+    std::cout << "player clicked" << std::endl;
     myController->rageQuit();
 }
