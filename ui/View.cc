@@ -164,6 +164,7 @@ void View::updateRound()
     std::cout << "updating round" << std::endl;
     reset();
     myController->startRound();
+    basicDialog(myModel->getRoundInfo());
 }
 
 void View::updateMenu() 
