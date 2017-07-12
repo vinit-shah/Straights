@@ -156,16 +156,17 @@ void View::updateMenu()
     //What buttons are clickable
     int currentPlayer = myModel->getActivePlayer();
     for(int i = 0; i < 4; i++)
+    {
         myPlayerBlocks[i].myButton->set_sensitive(i == currentPlayer);
-    int lastPlayer = (currentPlayer - 1) % 4,
-        lastScore = myModel->getScore(lastPlayer),
-        lastDiscards = myModel->getDiscards(lastPlayer);
-    std::stringstream ss;
-    ss << lastScore << " points";
-    myPlayerBlocks[lastPlayer].myScoreLabel->set_text(ss.str());
-    ss.str("");
-    ss << lastDiscards << " discards";
-    myPlayerBlocks[lastPlayer].myDiscardLabel->set_text(ss.str());
+        int lastScore = myModel->getScore(i),
+            lastDiscards = myModel->getDiscards(i);
+        std::stringstream ss;
+        ss << lastScore << " points";
+        myPlayerBlocks[i].myScoreLabel->set_text(ss.str());
+        ss.str("");
+        ss << lastDiscards << " discards";
+        myPlayerBlocks[i].myDiscardLabel->set_text(ss.str());
+    }
 }
 
 void View::updatePlayed()
