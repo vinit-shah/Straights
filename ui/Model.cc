@@ -11,8 +11,6 @@ void Model::startGame(int seed, bool playerTypes[])
     }
     myGame = new Game();
     myGame->startGame(seed,playerTypes);
-    myGame->startRound();
-    notify();
 }
 
 void Model::startRound()
@@ -43,6 +41,7 @@ void Model::playCard(int cardNum)
 void Model::rageQuit()
 {
     myGame->rageQuit();
+    notify();
 }
 
 std::string Model::roundResults() const
@@ -54,6 +53,12 @@ std::string Model::gameResults() const
 {
     return myGame->gameResults();
 }
+
+std::string Model::getRoundInfo() const
+{
+    return myGame->getRoundInfo();
+}
+
 
 const std::vector<Card*> Model::getPlayerHand() const 
 {
@@ -87,7 +92,7 @@ int Model::getDiscards(int playerNum) const
 
 bool Model::isGameOver() const 
 {
-    return nullptr==myGame;
+    return myGame->isGameOver();
 }
 
 bool Model::isGameActive() const

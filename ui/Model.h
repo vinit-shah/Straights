@@ -24,6 +24,7 @@ class Model : public Subject
 
         std::string roundResults() const;
         std::string gameResults() const;
+        std::string getRoundInfo() const;
 
         const std::vector<Card*> getPlayerHand() const;
         const std::vector<Card*> getPlayerDiscarded(int num) const;

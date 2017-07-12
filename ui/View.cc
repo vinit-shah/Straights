@@ -132,21 +132,27 @@ View::CardButton::clickListener() const
 
 void View::update() {
     //call specific update functions
-    if(myModel->isGameOver())
+    if (myModel->isGameActive())
     {
-        updateGame();
-        std::cout << "game is over" << std::endl;
-        reset();
-    }
-    else if(myModel->isRoundOver())
-    {
-        updateRound();
-    }
-    else
-    {
-        updateHand();
-        updateMenu();
-        updatePlayed();
+
+        if(myModel->isRoundOver())
+        {
+            if (myModel->isGameOver())
+            {
+                std::cout << "I'm here " << std::endl;
+                updateGame();
+            }
+            else {
+                std::cout << "I'm in the else condition" <<std::endl;
+                updateRound();
+            }
+        }
+        else
+        {
+            updateHand();
+            updateMenu();
+            updatePlayed();
+        }
     }
 }
 
@@ -163,8 +169,8 @@ void View::updateRound()
     showEndRound();
     std::cout << "updating round" << std::endl;
     reset();
-    myController->startRound();
     basicDialog(myModel->getRoundInfo());
+    myController->startRound();
 }
 
 void View::updateMenu() 
@@ -192,11 +198,8 @@ void View::updatePlayed()
     const std::vector<std::vector<Card*>> table = myModel->getCardsPlayed();
     for(int i = 0; i < 4; ++i)
     {
-        std::cout << table.size() << std::endl;
         for(int j = 0; j < 13; ++j)
         {
-            if(i < table.size())
-                std::cout << table[i].size() << std::endl;
             if(i < table.size() && j < table[i].size())
                 myTable[i][j]->set(myCardGUI->image(table[i][j]->rank().rank(), table[i][j]->suit().suit()));
         }
@@ -225,6 +228,7 @@ void View::basicDialog(const std::string &str)
     Gtk::Dialog dial("New Round", *this);
     Gtk::Box* vbox = dial.get_vbox();
     Gtk::Label lab(str);
+    lab.show();
     vbox->pack_start(lab, true, false);
     dial.add_button(Gtk::Stock::OK, Gtk::RESPONSE_OK);
     dial.run();
@@ -248,15 +252,14 @@ void View::startButtonClicked()
         pb.myView = this;
     }
     myController->startGame(s, playerTypes);
-    std::stringstream dialogBoxStr;
-    ss << "A new round begins. It's player" << myModel->getActivePlayer() << "'s turn to play.";
-    basicDialog(dialogBoxStr.str());
+    myController->startRound();
 }
 
 void View::endGameButtonClicked()
 {
     //call controller to end game
     myController->endGame();
+    Gtk::Main::quit();
 }
 
 void View::cardClicked(int index)
@@ -274,8 +277,8 @@ void View::showEndRound()
 void View::showEndGame()
 {
     //call controller to end game
+    showEndRound();
     basicDialog(myModel->gameResults());
-    myController->endGame();
 }
 
 void View::playerClicked()

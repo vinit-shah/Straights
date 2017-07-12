@@ -35,6 +35,7 @@ public:
 
     std::string roundResults() const;
     std::string gameResults() const;
+    std::string getRoundInfo();
 
 private:
     std::vector<Player*> myPlayers;

@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <iostream>
 #include <string>
+#include <sstream>
 
 #include "Game.h"
 #include "Human.h"
@@ -36,26 +37,12 @@ void Game::startGame(int seed, bool playerTypes[])
 void
 Game::startRound()
 {
-    myDeck.shuffle();
-
-    for(std::vector<Card*>& list:myTable)
-        list.clear();
-
-    for(int i = 0; i < myPlayers.size(); ++i)
-    {
-        Player* p = myPlayers[i];
-        const std::vector<Card*>& cards = myDeck.cards(i*13, (i+1)*13);
-        for(const Card *c: cards)
-        {
-            if(c->suit().suit() == Card::Suit::SPADE
-                && c->rank().rank() == Card::Rank::SEVEN)
-                myCurrentPlayer = i;
-        }
-        p->deal(cards);
-    }
+    std::cout << "I'm here" << std::endl;
     std::cout << "A new round begins. It's player " << myCurrentPlayer+1 << "'s turn to play." <<std::endl;
-    if (!myPlayers[myCurrentPlayer]->isHuman())
+    if (!myPlayers[myCurrentPlayer]->isHuman()){
+        std::cout << "first player is a computer" << std::endl;
         playCard(0);
+    }
 }
 
 void
@@ -109,9 +96,8 @@ Game::playCard(int cardNum)
     }
     else 
     {
-        while (!p->isHuman() && !isRoundOver() && !isGameOver())
+        while (!p->isHuman() && !isRoundOver())
         {
-                  
             Command c = p->play(myTable,0);
             if(c.type == Command::Type::PLAY)
             {
@@ -132,13 +118,14 @@ Game::playCard(int cardNum)
             }
             p = myPlayers[myCurrentPlayer];
         }
-
+        
     }
 }
 void 
 Game::rageQuit()
 {
     myPlayers[myCurrentPlayer]->rageQuit();
+    playCard(0);
 }
 
 bool
@@ -196,22 +183,23 @@ int Game::getDiscards(int num) const
 
 std::string Game::roundResults() const 
 {
-    std::string results;
+    std::stringstream ss;
     for(int i = 0; i < myPlayers.size(); i++)
     {
         const Player* p = myPlayers[i];
-        std::cout << "Player " << i+1 << "'s discards:";
+        ss << "Player " << i+1 << "'s discards:";
         int old = p->score();
         const std::vector<Card*>&  discarded = p->discarded();
         for(const Card *c: discarded)
         {
             old -= c->rank().rank()+1;
-            std::cout << " " << *c;
+            ss << " " << *c;
         }
-        std::cout << std::endl;
-        std::cout << "Player " << i+1 << "'s score: " << old << " + " << (p->score() - old) << " = " << p->score() << std::endl;
+        ss << std::endl;
+        ss << "Player " << i+1 << "'s score: " << old << " + " << (p->score() - old) << " = " << p->score() << std::endl;
     }
-    return "";
+    std::cout << ss.str() << std::endl;
+    return ss.str();
 }
 
 std::string Game::gameResults() const
@@ -232,11 +220,37 @@ std::string Game::gameResults() const
             minIndex.push_back(i);
         }
     }
+    std::stringstream ss;
     for (int i : minIndex)
     {
-        std::cout << "Player " << i+1 << " wins!" << std::endl;
+        ss << "Player " << i+1 << " wins!" << std::endl;
     }
-    return "";
+    std::cout << ss.str() << std::endl;
+    return ss.str();
+}
+
+std::string Game::getRoundInfo()
+{
+    myDeck.shuffle();
+
+    for(std::vector<Card*>& list:myTable)
+        list.clear();
+
+    for(int i = 0; i < myPlayers.size(); ++i)
+    {
+        Player* p = myPlayers[i];
+        const std::vector<Card*>& cards = myDeck.cards(i*13, (i+1)*13);
+        for(const Card *c: cards)
+        {
+            if(c->suit().suit() == Card::Suit::SPADE
+                && c->rank().rank() == Card::Rank::SEVEN)
+                myCurrentPlayer = i;
+        }
+        p->deal(cards);
+    }
+    std::stringstream ss;
+    ss<< "A new round begins. It's player " << myCurrentPlayer+1 << "'s turn to play." <<std::endl;
+    return ss.str();
 }
 
 void
