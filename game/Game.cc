@@ -109,7 +109,7 @@ Game::playCard(int cardNum)
     }
     else 
     {
-        while (!p->isHuman() && !isRoundOver())
+        while (!p->isHuman() && !isRoundOver() && !isGameOver())
         {
                   
             Command c = p->play(myTable,0);
@@ -157,6 +157,7 @@ Game::isRoundOver() const
 {
     for(const Player* p: myPlayers)
     {
+        std::cout << "size of hand " << p->hand().size() << std::endl;
         if(p->hand().size())
             return false;
     }
@@ -195,26 +196,46 @@ int Game::getDiscards(int num) const
 
 std::string Game::roundResults() const 
 {
-//    std::string results;
-//    for(int i = 0; i < myPlayers.size(); i++)
-//    {
-//        const Player* p = myPlayers[i];
-//        std::cout << "Player " << i+1 << "'s discards:";
-//        int old = p->score();
-//        const std::vector<Card*>&  discarded = p->discarded();
-//        for(const Card *c: discarded)
-//        {
-//            old -= c->rank().rank()+1;
-//            std::cout << " " << *c;
-//        }
-//        std::cout << std::endl;
-//        std::cout << "Player " << i+1 << "'s score: " << old << " + " << (p->score() - old) << " = " << p->score() << std::endl;
-//    }
+    std::string results;
+    for(int i = 0; i < myPlayers.size(); i++)
+    {
+        const Player* p = myPlayers[i];
+        std::cout << "Player " << i+1 << "'s discards:";
+        int old = p->score();
+        const std::vector<Card*>&  discarded = p->discarded();
+        for(const Card *c: discarded)
+        {
+            old -= c->rank().rank()+1;
+            std::cout << " " << *c;
+        }
+        std::cout << std::endl;
+        std::cout << "Player " << i+1 << "'s score: " << old << " + " << (p->score() - old) << " = " << p->score() << std::endl;
+    }
     return "";
 }
 
 std::string Game::gameResults() const
 {
+
+    std::vector<int> minIndex;
+    int minScore = 100000000;
+    for(int i = 0; i < myPlayers.size(); ++i)
+    {
+        if (myPlayers[i]->score() < minScore)
+        {
+            minIndex.clear();
+            minIndex.push_back(i);
+            minScore = myPlayers[i]->score();
+        }
+        else if (myPlayers[i]->score() == minScore)
+        {
+            minIndex.push_back(i);
+        }
+    }
+    for (int i : minIndex)
+    {
+        std::cout << "Player " << i+1 << " wins!" << std::endl;
+    }
     return "";
 }
 

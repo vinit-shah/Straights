@@ -86,7 +86,7 @@ int Model::getDiscards(int playerNum) const
 
 bool Model::isGameOver() const 
 {
-    return myGame->isGameOver();
+    return nullptr==myGame;
 }
 
 bool Model::isGameActive() const

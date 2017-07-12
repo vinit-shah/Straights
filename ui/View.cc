@@ -125,11 +125,13 @@ View::CardButton::clickListener() const
 
 void View::update() {
     //call specific update functions
-    if(myModel->isRoundOver())
+    if(myModel->isGameOver())
+    {
+        updateGame();
+    }
+    else if(myModel->isRoundOver())
     {
         updateRound();
-        if(myModel->isGameOver())
-            updateGame();
     }
     else
     {
@@ -261,6 +263,7 @@ void View::showEndGame()
 {
     //call controller to end game
     basicDialog(myModel->gameResults());
+    myController->endGame();
 }
 
 void View::playerClicked()
