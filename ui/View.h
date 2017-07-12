@@ -45,6 +45,7 @@ class View : public Gtk::Window, public Observer {
         void reset();
 
         void updateRound();
+        void updateGame();
         void updateMenu();
         void updatePlayer();
         void updatePlayed();
@@ -58,5 +59,7 @@ class View : public Gtk::Window, public Observer {
 
         void showEndRound();
         void showEndGame();
+
+        void basicDialog(const std::string &str);
 
 };

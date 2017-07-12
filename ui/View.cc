@@ -124,15 +124,31 @@ View::CardButton::clickListener() const
 
 void View::update() {
     //call specific update functions
-    if(!myModel->isGameActive())
+    if(myModel->isRoundOver())
+        updateRound();
+    else if(myModel->isGameOver())
+        updateGame();
+    else
     {
-
+        updateHand();
+        updateMenu();
+        updatePlayed();
     }
+}
+
+void
+View::updateGame()
+{
+    showEndGame();
+    reset();
 }
 
 void View::updateRound() 
 {
     //When round is finished, show scores in a dialog etc..
+    showEndRound();
+    reset();
+    myController->startRound();
 }
 
 void View::updateMenu() 
@@ -183,11 +199,23 @@ void View::updateHand()
     }
 }
 
+void View::basicDialog(const std::string &str)
+{
+    Gtk::Dialog dial("New Round", *this);
+    Gtk::VBox* vbox = dial.get_vbox();
+    vbox->pack_start(Gtk::Label(str, true, false));
+    dial.add_button(Gtk::Stock::OK, Gtk::RESPONSE_OK);
+    dial.run();
+}
+
 void View::startButtonClicked()
 {
     //call to controller's startButtonClicked function
     std::string seed = mySeedBox->get_text();
     std::stringstream ss(seed);
+    std::stringstream dialogBoxStr;
+    ss << "A new round begins. It's player" << myModel->getActivePlayer() << "'s turn to play.";
+    newRoundDialog(dialogBoxStr);
     reset();
     int s;
     ss >> s;
@@ -217,17 +245,16 @@ void View::cardClicked(int index)
 void View::showEndRound() 
 {
     //call controller end round stuff, show dialogue box
+    basicDialog(myModel->roundResults());
 }
 
 void View::showEndGame()
 {
     //call controller to end game
+    basicDialog(myModel->gameResults());
 }
 
 void View::playerClicked()
 {
-
+    myController->ragequit();
 }
-
-
-
