@@ -20,6 +20,7 @@ Computer::isHuman() const
 const Command
 Computer::play(const std::vector< std::vector <Card*> >& gameTable, int cardNum)
 {
+  std::cout << "I'M IN COMPUTER PLAYI, HEADS UP THE COMPUTER IS PLAYING " << std::endl;
   std::vector<Card*> legalPlays = constructLegalPlays(gameTable);
   Command command;
   if (legalPlays.empty())

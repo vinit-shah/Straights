@@ -6,7 +6,6 @@ void Model::startGame(int seed, bool playerTypes[])
 {
     if (isGameActive())
     {
-        std::cout << "here" << std::endl;
         delete myGame;
     }
     myGame = new Game();

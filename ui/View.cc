@@ -44,10 +44,12 @@ View::View(Controller* controller, Model* model, Glib::RefPtr<Gtk::Builder>& bui
         CardButton &btn = myCardButtons[i];
         btn.myIndex = i;
         btn.myView = this;
+        btn.myCardModel = myModel;
         builder->get_widget(ss.str(), btn.myImage);
         ss.str("");
         ss << "HandCard" << i + 1;
         builder->get_widget(ss.str(), btn.myButton);
+        btn.myButton->signal_clicked().connect(sigc::mem_fun(btn, &View::CardButton::clickListener));
     }
 
     // Player Boxes
@@ -104,7 +106,6 @@ View::reset()
         PlayerBlock &playerB = myPlayerBlocks[i];
         playerB.myScoreLabel->set_text("0 points");
         playerB.myDiscardLabel->set_text("0 discards");
-        std::cout << "not in game" << std::endl;
         playerB.myIsGame = false;
     }
 }
@@ -120,13 +121,18 @@ View::PlayerBlock::clickListener() const
             myButton->set_label("Human");
     }
     else
+    {
+        myButton->set_label("Computer");
         myView->playerClicked();
+    }
 }
 
 void
 View::CardButton::clickListener() const
 {
-    myView->cardClicked(myIndex);
+    std::cout << "CLICKED CARD" << std::endl;
+    if (myCardModel->isGameActive())
+        myView->cardClicked(myIndex);
 }
 
 void View::update() {
@@ -138,11 +144,9 @@ void View::update() {
         {
             if (myModel->isGameOver())
             {
-                std::cout << "I'm here " << std::endl;
                 updateGame();
             }
             else {
-                std::cout << "I'm in the else condition" <<std::endl;
                 updateRound();
             }
         }
@@ -166,7 +170,6 @@ void View::updateRound()
 {
     //When round is finished, show scores in a dialog etc..
     showEndRound();
-    std::cout << "updating round" << std::endl;
     reset();
     basicDialog(myModel->getRoundInfo());
     myController->startRound();
@@ -192,7 +195,6 @@ void View::updateMenu()
 
 void View::updatePlayed()
 {
-    std::cout << "Updating played" << std::endl;
     //get cards that have been played from the model, put them on screen
     const std::vector<std::vector<Card*>> table = myModel->getCardsPlayed();
     for(int i = 0; i < 4; ++i)
@@ -249,15 +251,18 @@ void View::startButtonClicked()
     for(int i = 0; i < 4; ++i)
     {
         PlayerBlock& pb = myPlayerBlocks[i];
-        playerTypes[i] = pb.myButton->get_label() == "Human";
-        pb.myButton->set_label("Rage!");
+        //playerTypes[i] = pb.myButton->get_label() == "Human";
+        if (pb.myButton->get_label() == "Human" || pb.myButton->get_label() == "Rage!")
+        {
+            playerTypes[i] = true;
+            pb.myButton->set_label("Rage!");
+        }
         pb.myIsGame = true;
         pb.myView = this;
     }
     for (int i = 0; i < 13; ++i)
     {
         CardButton &btn = myCardButtons[i];
-        btn.myButton->signal_clicked().connect(sigc::mem_fun(btn, &View::CardButton::clickListener));
     }
     myController->startGame(s, playerTypes);
     basicDialog(myModel->getRoundInfo());
@@ -268,7 +273,7 @@ void View::endGameButtonClicked()
 {
     //call controller to end game
     myController->endGame();
-    Gtk::Main::quit();
+    close();
 }
 
 void View::cardClicked(int index)
@@ -292,6 +297,5 @@ void View::showEndGame()
 
 void View::playerClicked()
 {
-    std::cout << "player clicked" << std::endl;
     myController->rageQuit();
 }

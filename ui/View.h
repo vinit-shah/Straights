@@ -35,6 +35,7 @@ class View : public Gtk::Window, public Observer {
         struct CardButton
         {
             View *myView = nullptr;
+            Model *myCardModel = nullptr;
             Gtk::Button *myButton = nullptr;
             Gtk::Image *myImage = nullptr;
             int myIndex = -1;

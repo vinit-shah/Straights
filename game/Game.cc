@@ -22,6 +22,14 @@ Game::~Game()
 
 void Game::startGame(int seed, bool playerTypes[])
 {
+  for (Player * p : myPlayers)
+  {
+      if (p != nullptr)
+      {
+          delete p;
+      }
+  }
+  myPlayers.resize(0);
   myDeck.setSeed(seed);
   for (int i = 0; i < 4; i++)
   {
@@ -37,7 +45,7 @@ void Game::startGame(int seed, bool playerTypes[])
 void
 Game::startRound()
 {
-    std::cout << "I'm here" << std::endl;
+    //std::cout << "I'm here" << std::endl;
     std::cout << "A new round begins. It's player " << myCurrentPlayer+1 << "'s turn to play." <<std::endl;
     if (myPlayers[myCurrentPlayer]->getType() == Player::Type::COMPUTER)
         playCard(0);
@@ -95,6 +103,7 @@ Game::playCard(int cardNum)
     p = myPlayers[myCurrentPlayer];
     while (p->getType() == Player::Type::COMPUTER && !isRoundOver())
     {
+        std::cout << "Player " << myCurrentPlayer+1 << "is a computer " << std::endl;
         Command c = p->play(myTable,0);
         if(c.type == Command::Type::PLAY)
         {
@@ -143,7 +152,6 @@ Game::isRoundOver() const
 {
     for(const Player* p: myPlayers)
     {
-        std::cout << "size of hand " << p->hand().size() << std::endl;
         if(p->hand().size())
             return false;
     }
@@ -248,7 +256,6 @@ std::string Game::getRoundInfo()
         }
         p->deal(cards);
     }
-    std::cout << "A new round begins. It's player " << myCurrentPlayer+1 << "'s turn to play." <<std::endl;
     std::stringstream ss;
     ss<< "A new round begins. It's player " << myCurrentPlayer+1 << "'s turn to play." <<std::endl;
     return ss.str();
