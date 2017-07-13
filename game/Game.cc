@@ -39,10 +39,8 @@ Game::startRound()
 {
     std::cout << "I'm here" << std::endl;
     std::cout << "A new round begins. It's player " << myCurrentPlayer+1 << "'s turn to play." <<std::endl;
-    if (!myPlayers[myCurrentPlayer]->isHuman()){
-        std::cout << "first player is a computer" << std::endl;
+    if (myPlayers[myCurrentPlayer]->getType() == Player::Type::COMPUTER)
         playCard(0);
-    }
 }
 
 void
@@ -68,7 +66,7 @@ void
 Game::playCard(int cardNum)
 {
     Player* p = myPlayers[myCurrentPlayer];
-    if (p->isHuman())
+    if (p->getType() == Player::Type::HUMAN)
     {
          
         Command c = p->play(myTable, cardNum);
@@ -96,7 +94,7 @@ Game::playCard(int cardNum)
     }
     else 
     {
-        while (!p->isHuman() && !isRoundOver())
+        while (p->getType() == Player::Type::COMPUTER && !isRoundOver())
         {
             Command c = p->play(myTable,0);
             if(c.type == Command::Type::PLAY)
@@ -124,7 +122,10 @@ Game::playCard(int cardNum)
 void 
 Game::rageQuit()
 {
-    myPlayers[myCurrentPlayer]->rageQuit();
+    Player* p = new Computer();
+    p->clone(*myPlayers[myCurrentPlayer]);
+    delete myPlayers[myCurrentPlayer];
+    myPlayers[myCurrentPlayer] = p;
     playCard(0);
 }
 

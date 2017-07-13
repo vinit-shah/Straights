@@ -9,6 +9,13 @@
 class Player
 {
   public:
+    enum class Type
+    {
+        HUMAN, 
+        COMPUTER,
+        INVALID
+    };
+
     Player();
     virtual ~Player();
     Player(const Player&) = delete;
@@ -19,12 +26,12 @@ class Player
     const std::vector <Card*>& hand() const;
     const std::vector<Card*>& discarded() const;
     int score() const;
-    virtual bool isHuman() const = 0;
+    Type getType() const;
 
-    virtual void rageQuit() = 0;
     virtual const Command play(const std::vector< std::vector <Card*> >& gameTable, int cardNum) = 0;
 
   protected:
+    Type                 myType;
     int                  myScore;
     std::vector<Card*>   myHand;
     std::vector<Card*>   myDiscardedPile;

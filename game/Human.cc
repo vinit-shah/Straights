@@ -4,7 +4,10 @@
 
 #include "Human.h"
 
-Human::Human() : Player(), human(true) {}
+Human::Human() : Player()
+{
+    myType = Player::Type::HUMAN;
+}
 
 Human::~Human() {}
 
@@ -34,18 +37,6 @@ Human::play(const std::vector< std::vector <Card*> >& gameTable, int cardNum)
     c.type= Command::Type::BAD_COMMAND;
     std::cout << "retung bad command" << std::endl;
     return c;
-}
-
-bool 
-Human::isHuman() const
-{
-    return human;
-}
-
-void
-Human::rageQuit() 
-{
-    human = false;
 }
 
 void

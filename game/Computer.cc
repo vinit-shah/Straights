@@ -4,7 +4,10 @@
 
 #include "Computer.h"
 
-Computer::Computer() : Player() {}
+Computer::Computer() : Player()
+{
+    myType = Player::Type::COMPUTER;
+}
 
 Computer::~Computer() {}
 
@@ -33,11 +36,6 @@ Computer::play(const std::vector< std::vector <Card*> >& gameTable, int cardNum)
     command.card = *legalPlays[0];
   }
   return command;
-}
-
-void 
-Computer::rageQuit() {
-    return;
 }
 
 void

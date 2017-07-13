@@ -2,7 +2,7 @@
 
 #include "Player.h"
 
-Player::Player() : myScore(0) {}
+Player::Player() : myType(Player::Type::INVALID), myScore(0) {}
 
 Player::~Player() {}
 
@@ -23,6 +23,13 @@ Player::deal(const std::vector<Card*> & cards)
     for (Card* c : cards){
         myHand.push_back(c);
     }
+}
+
+Player::Type
+Player::getType() const
+{
+    std::cout << "myType: " << static_cast<int>(myType) << std::endl;
+    return myType;
 }
 
 const std::vector<Card*>&
