@@ -201,7 +201,11 @@ void View::updatePlayed()
         for(int j = 0; j < 13; ++j)
         {
             if(i < table.size() && j < table[i].size())
-                myTable[i][j]->set(myCardGUI->image(table[i][j]->rank().rank(), table[i][j]->suit().suit()));
+            {
+                int rank = table[i][j]->rank().rank();
+                int suit = table[i][j]->suit().suit();
+                myTable[suit][rank]->set(myCardGUI->image(rank, suit));
+            }
         }
     }
 }

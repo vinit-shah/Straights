@@ -973,12 +973,12 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="HandCard9">
+              <object class="GtkButton" id="HandCard8">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <child>
-                  <object class="GtkImage" id="HC9Img">
+                  <object class="GtkImage" id="HC8Img">
                     <property name="visible">True</property>
                     <property name="stock">gtk-missing-image</property>
                   </object>
@@ -989,12 +989,12 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="HandCard8">
+              <object class="GtkButton" id="HandCard9">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <child>
-                  <object class="GtkImage" id="HC8Img">
+                  <object class="GtkImage" id="HC9Img">
                     <property name="visible">True</property>
                     <property name="stock">gtk-missing-image</property>
                   </object>
