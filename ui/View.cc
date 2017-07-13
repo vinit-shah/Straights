@@ -48,7 +48,6 @@ View::View(Controller* controller, Model* model, Glib::RefPtr<Gtk::Builder>& bui
         ss.str("");
         ss << "HandCard" << i + 1;
         builder->get_widget(ss.str(), btn.myButton);
-        btn.myButton->signal_clicked().connect(sigc::mem_fun(btn, &View::CardButton::clickListener));
     }
 
     // Player Boxes
@@ -254,6 +253,11 @@ void View::startButtonClicked()
         pb.myButton->set_label("Rage!");
         pb.myIsGame = true;
         pb.myView = this;
+    }
+    for (int i = 0; i < 13; ++i)
+    {
+        CardButton &btn = myCardButtons[i];
+        btn.myButton->signal_clicked().connect(sigc::mem_fun(btn, &View::CardButton::clickListener));
     }
     myController->startGame(s, playerTypes);
     basicDialog(myModel->getRoundInfo());
