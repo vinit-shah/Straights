@@ -252,6 +252,7 @@ void View::startButtonClicked()
         pb.myView = this;
     }
     myController->startGame(s, playerTypes);
+    basicDialog(myModel->getRoundInfo());
     myController->startRound();
 }
 

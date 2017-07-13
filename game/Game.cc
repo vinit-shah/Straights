@@ -92,31 +92,29 @@ Game::playCard(int cardNum)
             myCurrentPlayer = (myCurrentPlayer+1)%4;
         }
     }
-    else 
+    p = myPlayers[myCurrentPlayer];
+    while (p->getType() == Player::Type::COMPUTER && !isRoundOver())
     {
-        while (p->getType() == Player::Type::COMPUTER && !isRoundOver())
+        Command c = p->play(myTable,0);
+        if(c.type == Command::Type::PLAY)
         {
-            Command c = p->play(myTable,0);
-            if(c.type == Command::Type::PLAY)
-            {
-                Card * card = myDeck.find(c.card);
-                int s = card->suit().suit();
-                if (myTable[s].empty())
-                    myTable[s].push_back(card);
-                else if (myTable[s].front()->rank().rank() > card->rank().rank())
-                    myTable[s].insert(myTable[s].begin(), card);
-                else
-                    myTable[s].push_back(card);
-                std::cout << "Player " << myCurrentPlayer+1 <<  " plays " << c.card << "."<< std::endl;
-                myCurrentPlayer = (myCurrentPlayer+1)%4;
-            }
-            else if(c.type == Command::Type::DISCARD) {
-                std::cout << "Player " << myCurrentPlayer+1 << " discards " << c.card <<"." << std::endl;
-                myCurrentPlayer = (myCurrentPlayer+1)%4;
-            }
-            p = myPlayers[myCurrentPlayer];
+            Card * card = myDeck.find(c.card);
+            int s = card->suit().suit();
+            if (myTable[s].empty())
+                myTable[s].push_back(card);
+            else if (myTable[s].front()->rank().rank() > card->rank().rank())
+                myTable[s].insert(myTable[s].begin(), card);
+            else
+                myTable[s].push_back(card);
+            std::cout << "Player " << myCurrentPlayer+1 <<  " plays " << c.card << "."<< std::endl;
+            myCurrentPlayer = (myCurrentPlayer+1)%4;
         }
-        
+        else if(c.type == Command::Type::DISCARD)
+        {
+            std::cout << "Player " << myCurrentPlayer+1 << " discards " << c.card <<"." << std::endl;
+            myCurrentPlayer = (myCurrentPlayer+1)%4;
+        }
+        p = myPlayers[myCurrentPlayer];
     }
 }
 void 
@@ -232,6 +230,7 @@ std::string Game::gameResults() const
 
 std::string Game::getRoundInfo()
 {
+
     myDeck.shuffle();
 
     for(std::vector<Card*>& list:myTable)
@@ -249,6 +248,7 @@ std::string Game::getRoundInfo()
         }
         p->deal(cards);
     }
+    std::cout << "A new round begins. It's player " << myCurrentPlayer+1 << "'s turn to play." <<std::endl;
     std::stringstream ss;
     ss<< "A new round begins. It's player " << myCurrentPlayer+1 << "'s turn to play." <<std::endl;
     return ss.str();
