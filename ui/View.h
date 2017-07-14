@@ -10,7 +10,7 @@ class Controller;
 class CardGUI;
 class View : public Gtk::Window, public Observer {
     public:
-        View (Controller *, Model*, Glib::RefPtr<Gtk::Builder>& builder);
+        View (Controller *, Model*, Glib::RefPtr<Gtk::Builder>& builder, Glib::RefPtr<Gtk::Application>& app);
         virtual ~View();
         virtual void update() override;
     
@@ -18,6 +18,7 @@ class View : public Gtk::Window, public Observer {
         Model* myModel;
         Controller* myController;
         CardGUI* myCardGUI;
+        Glib::RefPtr<Gtk::Application> myApp;
         Glib::RefPtr<Gtk::Builder> myBuilder;
         Gtk::Image* myTable[4][13] = {{nullptr}};
         Gtk::Entry* mySeedBox = nullptr;

@@ -8,12 +8,12 @@
 
 int main(int argc, char* argv[]) 
 {
-    auto app = Gtk::Application::create( argc, argv, "Straights UI" );
+    auto app = Gtk::Application::create( argc, argv, "straights.ui" );
 
     Model model;
     Controller controller(&model);
     Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("P2.glade");
-    Gtk::Window *game = new View(&controller, &model, builder);
+    Gtk::Window *game = new View(&controller, &model, builder, app);
     builder->get_widget("window1", game);
     app->run(*game);
     return 0;

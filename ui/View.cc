@@ -6,7 +6,14 @@
 #include "Controller.h"
 #include "View.h"
 
-View::View(Controller* controller, Model* model, Glib::RefPtr<Gtk::Builder>& builder) : myController(controller) , myModel(model) 
+View::View(
+        Controller* controller,
+        Model* model,
+        Glib::RefPtr<Gtk::Builder>& builder,
+        Glib::RefPtr<Gtk::Application>& app) :
+    myController(controller),
+    myModel(model), 
+    myApp(app)
 {
     
     Gtk::Button* button;
@@ -277,8 +284,7 @@ void View::endGameButtonClicked()
 {
     //call controller to end game
     myController->endGame();
-    //close();
-    exit(0);
+    myApp->quit();
 }
 
 void View::cardClicked(int index)
