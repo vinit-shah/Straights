@@ -37,4 +37,5 @@ class Model : public Subject
         bool isGameOver() const;
         bool isGameActive() const;
         bool isRoundOver() const;
+        bool isLegal() const;
 };

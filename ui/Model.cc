@@ -104,3 +104,8 @@ bool Model::isRoundOver() const
     return myGame->isRoundOver();
 }
 
+bool Model::isLegal() const
+{
+    return myGame->isPlayLegal();
+}
+

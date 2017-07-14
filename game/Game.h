@@ -24,7 +24,8 @@ public:
 
     bool isGameOver() const;
     bool isRoundOver() const;
-    
+    bool isPlayLegal() const;
+
     const std::vector<Card*> getPlayerHand() const;
     const std::vector<Card*> getPlayerDiscarded(int num) const;
     const std::vector <std::vector<Card*> > getCardsPlayed() const;
@@ -38,6 +39,7 @@ public:
     std::string getRoundInfo();
 
 private:
+    bool isLegal = true;
     std::vector<Player*> myPlayers;
     std::vector<std::vector<Card*> > myTable;
     unsigned int        myCurrentPlayer;

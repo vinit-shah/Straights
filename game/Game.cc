@@ -80,10 +80,12 @@ Game::playCard(int cardNum)
         Command c = p->play(myTable, cardNum);
         if (c.type == Command::Type::BAD_COMMAND)
         {
+            isLegal = false;
             return;
         }
         if(c.type == Command::Type::PLAY)
         {
+            isLegal = true;
             Card * card = myDeck.find(c.card);
             int s = card->suit().suit();
             if (myTable[s].empty())
@@ -96,6 +98,7 @@ Game::playCard(int cardNum)
             myCurrentPlayer = (myCurrentPlayer+1)%4;
         }
         else if(c.type == Command::Type::DISCARD) {
+            isLegal = true;
             std::cout << "Player " << myCurrentPlayer+1 << " discards " << c.card <<"." << std::endl;
             myCurrentPlayer = (myCurrentPlayer+1)%4;
         }
@@ -107,6 +110,7 @@ Game::playCard(int cardNum)
         Command c = p->play(myTable,0);
         if(c.type == Command::Type::PLAY)
         {
+            isLegal = true;
             Card * card = myDeck.find(c.card);
             int s = card->suit().suit();
             if (myTable[s].empty())
@@ -120,6 +124,7 @@ Game::playCard(int cardNum)
         }
         else if(c.type == Command::Type::DISCARD)
         {
+            isLegal = true;
             std::cout << "Player " << myCurrentPlayer+1 << " discards " << c.card <<"." << std::endl;
             myCurrentPlayer = (myCurrentPlayer+1)%4;
         }
@@ -259,6 +264,12 @@ std::string Game::getRoundInfo()
     std::stringstream ss;
     ss<< "A new round begins. It's player " << myCurrentPlayer+1 << "'s turn to play." <<std::endl;
     return ss.str();
+}
+
+bool 
+Game::isPlayLegal() const
+{
+    return isLegal;
 }
 
 void

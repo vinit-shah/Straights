@@ -195,6 +195,10 @@ void View::updateMenu()
 
 void View::updatePlayed()
 {
+    if(!myModel->isLegal())
+    {
+        basicDialog("You have a legal play");
+    }
     //get cards that have been played from the model, put them on screen
     const std::vector<std::vector<Card*>> table = myModel->getCardsPlayed();
     for(int i = 0; i < 4; ++i)
@@ -273,7 +277,8 @@ void View::endGameButtonClicked()
 {
     //call controller to end game
     myController->endGame();
-    close();
+    //close();
+    exit(0);
 }
 
 void View::cardClicked(int index)
